@@ -30,10 +30,10 @@ export default function Home() {
         </div>
 
         <div className="flex space-x-4 md:space-x-8 mb-4 md:mb-0">
-          <Link href="/dashboard/about-us" className="font-poppins text-sm">
+          <Link href="/about-us" className="font-poppins text-sm">
             About Us
           </Link>
-          <Link href="/dashboard/contact-us" className="font-poppins text-sm">
+          <Link href="/contact-us" className="font-poppins text-sm">
             Contact
           </Link>
         </div>
