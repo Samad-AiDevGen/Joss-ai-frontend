@@ -10,26 +10,26 @@ export default function Home() {
   return (
     <main className="relative overflow-x-hidden">
       {/* Abstract Background */}
-      <div className="absolute w-[1485px] h-[990px] -top-[207px] -left-[26px] z-0">
+      <div className="absolute w-full md:w-[1485px] h-[990px] -top-[207px] -left-[26px] z-0 overflow-hidden">
         <Image
           src="/colorful-abstract-texture.png"
           alt="Abstract Background"
           width={1485}
           height={990}
-          className="opacity-35"
+          className="opacity-35 object-cover"
           priority
         />
       </div>
 
       {/* Navbar */}
-      <nav className="w-full max-w-[1440px] h-[74px] flex justify-between items-center border-b-2 border-gray-200 py-[15px] px-[80px] relative z-10">
-        <div className="flex items-center">
+      <nav className="w-full max-w-[1440px] h-auto min-h-[74px] flex flex-col md:flex-row justify-between items-center border-b-2 border-gray-200 py-[15px] px-4 md:px-[80px] relative z-10">
+        <div className="flex items-center mb-4 md:mb-0">
           <div className="flex items-center">
             <Image src="/joss-logo.png" alt="JOSS Logo" width={80} height={30} priority />
           </div>
         </div>
 
-        <div className="flex space-x-8">
+        <div className="flex space-x-4 md:space-x-8 mb-4 md:mb-0">
           <Link href="/dashboard/about-us" className="font-poppins text-sm">
             About Us
           </Link>
@@ -38,7 +38,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4">
           <Link href="/login" className="font-poppins text-sm text-purple-600">
             Login
           </Link>
@@ -55,12 +55,12 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative w-full max-w-[1440px] h-[613px] bg-white shadow-[0px_4px_20px_4px_rgba(0,0,0,0.1)] z-10">
-        <div className="flex px-[80px] pt-[80px] relative">
+      <section className="relative w-full max-w-[1440px] h-auto min-h-[613px] bg-white shadow-[0px_4px_20px_4px_rgba(0,0,0,0.1)] z-10">
+        <div className="flex flex-col lg:flex-row px-4 md:px-[80px] pt-[40px] md:pt-[80px] relative">
           {/* Hero Text Content */}
-          <div className="w-[586px] h-[253px] flex flex-col gap-[20px] z-10">
+          <div className="w-full lg:w-[586px] h-auto lg:h-[253px] flex flex-col gap-[20px] z-10 mb-10 lg:mb-0">
             <div>
-              <h1 className="font-poppins font-bold text-5xl">
+              <h1 className="font-poppins font-bold text-3xl md:text-5xl">
                 <span className="text-purple-600">Great</span> Discover The
                 <br />
                 Future Of <span className="text-purple-600">Innovation</span>
@@ -78,12 +78,12 @@ export default function Home() {
           </div>
 
           {/* Background Circle Art - Positioned correctly behind the AI face */}
-          <div className="absolute w-[542px] h-[542px] top-[50px] right-[144px] z-[1]">
+          <div className="relative lg:absolute w-full max-w-[300px] md:max-w-[400px] lg:w-[542px] h-[300px] md:h-[400px] lg:h-[542px] mx-auto lg:top-[50px] lg:right-[144px] z-[1]">
             <Image src="/bg-art.png" alt="Background Art" width={542} height={542} className="object-contain" />
           </div>
 
           {/* Main Illustration - Positioned to align with text */}
-          <div className="absolute w-[497px] h-[500px] top-[20px] right-[80px] z-[2]">
+          <div className="relative lg:absolute w-full max-w-[300px] md:max-w-[400px] lg:w-[497px] h-[300px] md:h-[400px] lg:h-[500px] mx-auto lg:top-[20px] lg:right-[80px] z-[2]">
             <Image
               src="/ai-face-gradient.png"
               alt="AI Illustration"
@@ -95,15 +95,15 @@ export default function Home() {
         </div>
 
         {/* "Talk to your loved one" Text */}
-        <div className="absolute w-[1355px] h-[180px] top-[482px] left-[51px] border-[3px] border-[#CDCDCD99] flex items-center justify-center z-[1]">
-          <h2 className="font-poppins font-black text-[120px] leading-[100%] tracking-[0px] capitalize text-gray-200">
+        <div className="absolute w-full md:w-[90%] lg:w-[1355px] h-auto md:h-[180px] bottom-0 left-0 right-0 md:left-[5%] lg:left-[51px] border-[3px] border-[#CDCDCD99] flex items-center justify-center z-[1] overflow-hidden">
+          <h2 className="font-poppins font-black text-[40px] sm:text-[60px] md:text-[80px] lg:text-[120px] leading-[100%] tracking-[0px] capitalize text-gray-200 py-2 whitespace-nowrap overflow-hidden text-ellipsis">
             Talk To Your Loved One
           </h2>
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section className="w-full max-w-[1440px] py-20 px-[80px] bg-gray-50">
+      <section className="w-full max-w-[1440px] py-20 px-4 md:px-[80px] bg-gray-50">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-4">
             How <span className="text-purple-600">It Works</span>
@@ -115,11 +115,11 @@ export default function Home() {
         </div>
 
         {/* Feature 1 */}
-        <div className="flex items-center justify-between mb-24">
-          <div className="w-[500px]">
-            <Image src="/device-mockup-1.png" alt="Device Mockup" width={500} height={350} />
+        <div className="flex flex-col lg:flex-row items-center justify-between mb-16 lg:mb-24 gap-8">
+          <div className="w-full lg:w-[500px]">
+            <Image src="/device-mockup-1.png" alt="Device Mockup" width={500} height={350} className="w-full" />
           </div>
-          <div className="w-[500px]">
+          <div className="w-full lg:w-[500px]">
             <h3 className="text-2xl font-bold mb-4">
               Answers the given <span className="text-purple-600">Questions</span>
             </h3>
@@ -131,11 +131,11 @@ export default function Home() {
         </div>
 
         {/* Feature 2 */}
-        <div className="flex items-center justify-between mb-24 flex-row-reverse">
-          <div className="w-[500px]">
-            <Image src="/device-mockup-1.png" alt="Device Mockup" width={500} height={350} />
+        <div className="flex flex-col lg:flex-row-reverse items-center justify-between mb-16 lg:mb-24 gap-8">
+          <div className="w-full lg:w-[500px]">
+            <Image src="/device-mockup-1.png" alt="Device Mockup" width={500} height={350} className="w-full" />
           </div>
-          <div className="w-[500px]">
+          <div className="w-full lg:w-[500px]">
             <h3 className="text-2xl font-bold mb-4">
               Input & <span className="text-purple-600">Describe</span> your image
             </h3>
@@ -147,11 +147,11 @@ export default function Home() {
         </div>
 
         {/* Feature 3 */}
-        <div className="flex items-center justify-between mb-24">
-          <div className="w-[500px]">
-            <Image src="/device-mockup-1.png" alt="Device Mockup" width={500} height={350} />
+        <div className="flex flex-col lg:flex-row items-center justify-between mb-16 lg:mb-24 gap-8">
+          <div className="w-full lg:w-[500px]">
+            <Image src="/device-mockup-1.png" alt="Device Mockup" width={500} height={350} className="w-full" />
           </div>
-          <div className="w-[500px]">
+          <div className="w-full lg:w-[500px]">
             <h3 className="text-2xl font-bold mb-4">
               Enjoy with your <span className="text-purple-600">Loved One&apos;s</span>
             </h3>
@@ -163,11 +163,11 @@ export default function Home() {
         </div>
 
         {/* Feature 4 */}
-        <div className="flex items-center justify-between mb-24 flex-row-reverse">
-          <div className="w-[500px]">
-            <Image src="/device-mockup-1.png" alt="Device Mockup" width={500} height={350} />
+        <div className="flex flex-col lg:flex-row-reverse items-center justify-between mb-16 lg:mb-24 gap-8">
+          <div className="w-full lg:w-[500px]">
+            <Image src="/device-mockup-1.png" alt="Device Mockup" width={500} height={350} className="w-full" />
           </div>
-          <div className="w-[500px]">
+          <div className="w-full lg:w-[500px]">
             <h3 className="text-2xl font-bold mb-4">
               AI Image <span className="text-purple-600">Generated</span>
             </h3>
@@ -180,7 +180,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="w-full max-w-[1440px] py-16 px-[80px] bg-pink-100 rounded-lg relative overflow-hidden">
+      <section className="w-full max-w-[1440px] py-16 px-4 md:px-[80px] bg-pink-100 rounded-lg relative overflow-hidden">
         {/* Background Image */}
         <div
           className="absolute"
@@ -189,9 +189,9 @@ export default function Home() {
           <Image src="/Background.png" alt="Background" width={1239} height={697} className="object-cover" />
         </div>
 
-        <div className="flex items-center justify-between relative z-10">
-          <div className="w-[500px]">
-            <h2 className="text-3xl font-bold mb-4">
+        <div className="flex flex-col lg:flex-row items-center justify-between relative z-10 gap-8">
+          <div className="w-full lg:w-[500px]">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
               If you&apos;re considering to try <span className="text-purple-600">JOSS AI</span>, don&apos;t get ready.
             </h2>
             <p className="text-gray-600 mb-6">
@@ -201,10 +201,10 @@ export default function Home() {
               Get started now
             </button>
           </div>
-          <div className="w-[500px] relative">
+          <div className="w-full lg:w-[500px] relative">
             <div className="absolute inset-0 bg-gradient-to-r from-pink-300 to-purple-300 rounded-lg -z-10"></div>
             <div className="relative">
-              <Image src="/cta-person.png" alt="Person" width={500} height={300} className="rounded-lg" />
+              <Image src="/cta-person.png" alt="Person" width={500} height={300} className="rounded-lg w-full" />
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-50 rounded-full p-3">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
                   <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[16px] border-l-purple-600 border-b-[8px] border-b-transparent ml-1"></div>
@@ -216,7 +216,7 @@ export default function Home() {
       </section>
 
       {/* Design and Development Approach */}
-      <section className="w-full max-w-[1440px] py-20 px-[80px]">
+      <section className="w-full max-w-[1440px] py-20 px-4 md:px-[80px]">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-4">
             Design and <span className="text-purple-600">Development</span> Approach
@@ -227,10 +227,10 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
           {/* Feature Card 1 - AI Reality Based Images */}
           <div className="bg-[#B25CD9] p-6 rounded-lg flex items-start">
-            <div className="mr-4 mt-1">
+            <div className="mr-4 mt-1 flex-shrink-0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 text-white"
@@ -257,7 +257,7 @@ export default function Home() {
 
           {/* Feature Card 2 - Video Calls */}
           <div className="bg-[#FAFAFA] p-6 rounded-lg flex items-start">
-            <div className="mr-4 mt-1">
+            <div className="mr-4 mt-1 flex-shrink-0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 text-purple-600"
@@ -284,7 +284,7 @@ export default function Home() {
 
           {/* Feature Card 3 - Feel in Reality */}
           <div className="bg-[#FAFAFA] p-6 rounded-lg flex items-start">
-            <div className="mr-4 mt-1">
+            <div className="mr-4 mt-1 flex-shrink-0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 text-purple-600"
@@ -311,7 +311,7 @@ export default function Home() {
 
           {/* Feature Card 4 - Your Loved One's in your Pocket */}
           <div className="bg-[#FAFAFA] p-6 rounded-lg flex items-start">
-            <div className="mr-4 mt-1">
+            <div className="mr-4 mt-1 flex-shrink-0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 text-purple-600"
@@ -338,7 +338,7 @@ export default function Home() {
 
           {/* Feature Card 5 - Fun with Friends and Family */}
           <div className="bg-[#FAFAFA] p-6 rounded-lg flex items-start">
-            <div className="mr-4 mt-1">
+            <div className="mr-4 mt-1 flex-shrink-0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 text-purple-600"
@@ -365,7 +365,7 @@ export default function Home() {
 
           {/* Feature Card 6 - Enjoy with your Loved One's */}
           <div className="bg-[#FAFAFA] p-6 rounded-lg flex items-start">
-            <div className="mr-4 mt-1">
+            <div className="mr-4 mt-1 flex-shrink-0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 text-purple-600"
@@ -393,7 +393,7 @@ export default function Home() {
       </section>
 
       {/* Download App Section */}
-      <section className="w-full max-w-[1440px] py-20 px-[80px] bg-[#0D0B21] text-white relative overflow-hidden">
+      <section className="w-full max-w-[1440px] py-20 px-4 md:px-[80px] bg-[#0D0B21] text-white relative overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0" style={{ top: "1px" }}>
           <Image
@@ -406,16 +406,16 @@ export default function Home() {
           />
         </div>
 
-        <div className="flex items-center justify-between relative z-10">
-          <div className="w-[500px]">
-            <h2 className="text-3xl font-bold mb-4">
+        <div className="flex flex-col lg:flex-row items-center justify-between relative z-10 gap-8">
+          <div className="w-full lg:w-[500px] text-center lg:text-left">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
               Download Our App
               <br />
               <span className="text-purple-400">Design And Download</span>
               <br />
               Our App Free
             </h2>
-            <div className="flex mt-8 space-x-4">
+            <div className="flex flex-wrap justify-center lg:justify-start mt-8 gap-4">
               <Link href="#">
                 <Image src="/app-store.png" alt="App Store" width={150} height={50} />
               </Link>
@@ -424,15 +424,15 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="w-[500px]">
+          <div className="w-full lg:w-[500px] flex justify-center">
             <Image src="/Mobile.png" alt="App Mockup" width={300} height={600} className="mx-auto" />
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="w-full max-w-[1440px] py-16 px-[80px] bg-white border-t">
-        <div className="grid grid-cols-4 gap-8 mb-12">
+      <footer className="w-full max-w-[1440px] py-16 px-4 md:px-[80px] bg-white border-t">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
             <Image src="/joss-logo.png" alt="JOSS Logo" width={80} height={30} className="mb-4" />
             <p className="text-gray-600 text-sm mb-4">

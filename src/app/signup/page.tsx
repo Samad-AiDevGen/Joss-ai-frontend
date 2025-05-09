@@ -30,11 +30,11 @@ export default function Signup() {
   }
 
   return (
-    <main className="flex min-h-screen w-full bg-white">
+    <main className="flex flex-col lg:flex-row min-h-screen w-full bg-white">
       {/* Left Side - Signup Form */}
-      <div className="relative flex flex-col w-[955px]">
-        <div className="absolute w-[410px] top-[220px] left-[280px]">
-          <h1 className="text-3xl font-bold text-[#0D0B21] mb-2">Sign Up</h1>
+      <div className="relative flex flex-col w-full lg:w-1/2 px-6 py-12 md:px-12 lg:px-0 order-2 lg:order-1">
+        <div className="w-full max-w-md mx-auto lg:mx-0 lg:max-w-none lg:ml-auto lg:mr-16 xl:mr-32 lg:pr-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-[#0D0B21] mb-2">Sign Up</h1>
           <p className="text-gray-500 mb-6">Enter your email and password to sign up!</p>
 
           {/* Social Login Buttons */}
@@ -167,24 +167,18 @@ export default function Signup() {
       </div>
 
       {/* Right Side - Image */}
-      <div className="relative w-[965px] h-[1152px]">
+      <div className="relative w-full lg:w-1/2 h-[30vh] md:h-[40vh] lg:h-screen order-1 lg:order-2">
         <Image
           src="/Right.png"
           alt="Joss AI"
           fill
-          className="object-cover object-top"
+          className="object-cover object-center lg:object-top"
           priority
-          sizes="(max-width: 965px) 100vw, 965px"
+          sizes="(max-width: 1024px) 100vw, 50vw"
           quality={100}
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="mb-16">
-            {/* <Image src="/joss-logo.png" alt="JOSS Logo" width={200} height={80} /> */}
-          </div>
-          {/* <div className="bg-black bg-opacity-20 backdrop-blur-sm rounded-full px-12 py-6 text-center text-white">
-            <h2 className="text-xl font-medium mb-1">Welcome to</h2>
-            <p className="text-2xl font-semibold">Joss AI system image to video</p>
-          </div> */}
+          <div className="mb-16">{/* Content inside the image if needed */}</div>
         </div>
       </div>
     </main>
