@@ -3,11 +3,12 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Heart, Play, Search, Bell, Upload, Menu, X } from "lucide-react"
+import { Heart, Play, Search, Bell, Upload, Menu, X, ChevronDown, ExternalLink } from "lucide-react"
 import UploadDialog from "@/components/upload-dialog" // Upload Photo Dialog
 import VideoGenerator from "@/components/video-generator" // Video Generator Dialog
 import VideoCall from "@/components/video-call" // Video Call Component
 import ExportVideo from "@/components/export-video" // Export Video Component
+import EditVideo from "@/components/edit-video" // Edit Video Component
 
 interface VideoCardProps {
   id: string
@@ -23,9 +24,11 @@ const VideoCard = ({
   thumbnail,
   onPlay,
   onExport,
+  onEdit,
 }: VideoCardProps & {
   onPlay: (video: VideoCardProps) => void
   onExport: (video: VideoCardProps) => void
+  onEdit: (video: VideoCardProps) => void
 }) => {
   return (
     <div className="relative group">
@@ -62,7 +65,12 @@ const VideoCard = ({
             >
               Export
             </button>
-            <button className="bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded">Edit</button>
+            <button
+              className="bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded"
+              onClick={() => onEdit({ id, title, duration, thumbnail })}
+            >
+              Edit
+            </button>
           </div>
         </div>
       </div>
@@ -76,6 +84,7 @@ export default function Dashboard() {
   const [isVideoGeneratorOpen, setIsVideoGeneratorOpen] = useState(false)
   const [activeVideoCall, setActiveVideoCall] = useState<VideoCardProps | null>(null)
   const [activeExportVideo, setActiveExportVideo] = useState<VideoCardProps | null>(null)
+  const [activeEditVideo, setActiveEditVideo] = useState<VideoCardProps | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const recentVideos = [
@@ -119,8 +128,7 @@ export default function Dashboard() {
 
   const handleUploadComplete = (fileUrl: string) => {
     console.log("File uploaded:", fileUrl)
-    // Navigate to generate page after upload
-    router.push("/dashboard/generate")
+    // Do not navigate away from the dashboard
   }
 
   const handlePlayVideo = (video: VideoCardProps) => {
@@ -129,6 +137,10 @@ export default function Dashboard() {
 
   const handleExportVideo = (video: VideoCardProps) => {
     setActiveExportVideo(video)
+  }
+
+  const handleEditVideo = (video: VideoCardProps) => {
+    setActiveEditVideo(video)
   }
 
   const handleVideoCallEnd = (videoId: string) => {
@@ -144,6 +156,14 @@ export default function Dashboard() {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
+  }
+
+  const navigateToProfile = () => {
+    router.push("/dashboard/profile")
+  }
+
+  const navigateToStorage = () => {
+    router.push("/dashboard/storage")
   }
 
   return (
@@ -222,13 +242,24 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+
+            <button
+              className="w-full mt-3 bg-indigo-100 text-indigo-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1"
+              onClick={() => router.push("/dashboard/storage")}
+            >
+              <ExternalLink size={14} />
+              View Storage
+            </button>
           </div>
 
           {/* Premium Upgrade from Sidebar */}
           <div className="bg-purple-600 rounded-xl p-4 text-white">
             <h2 className="text-lg font-bold mb-2">Upgrade Premium</h2>
             <p className="text-purple-200 text-sm mb-4">Enjoy full features & unlimited storage</p>
-            <button className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium mb-2 w-full text-sm">
+            <button
+              className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium mb-2 w-full text-sm"
+              onClick={() => router.push("/dashboard/subscription")}
+            >
               Get Pro Now
             </button>
           </div>
@@ -256,6 +287,13 @@ export default function Dashboard() {
           isOpen={!!activeExportVideo}
           onClose={() => setActiveExportVideo(null)}
           videoData={activeExportVideo || { id: "", title: "", thumbnail: "", duration: "" }}
+        />
+
+        {/* Edit Video */}
+        <EditVideo
+          isOpen={!!activeEditVideo}
+          onClose={() => setActiveEditVideo(null)}
+          videoData={activeEditVideo || { id: "", title: "", thumbnail: "", duration: "" }}
         />
 
         {/* Main Content Area */}
@@ -288,11 +326,12 @@ export default function Dashboard() {
               <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
                 <Bell className="h-4 w-4 text-gray-600" />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 cursor-pointer" onClick={navigateToProfile}>
                 <div className="w-8 h-8 rounded-full overflow-hidden">
                   <Image src="/professional-headshot.png" alt="Rob John Gonzalez" width={32} height={32} />
                 </div>
                 <span className="text-sm font-medium">Rob John Gonzalez</span>
+                <ChevronDown className="h-4 w-4 text-gray-500" />
               </div>
             </div>
 
@@ -354,6 +393,7 @@ export default function Dashboard() {
                   thumbnail={video.thumbnail}
                   onPlay={handlePlayVideo}
                   onExport={handleExportVideo}
+                  onEdit={handleEditVideo}
                 />
               ))}
             </div>
@@ -378,7 +418,7 @@ export default function Dashboard() {
               <h2 className="text-lg font-bold">Storage</h2>
             </div>
 
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mr-4 relative">
                   <div className="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold">
@@ -405,13 +445,24 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+
+            <button
+              className="w-full bg-indigo-100 text-indigo-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1.5"
+              onClick={navigateToStorage}
+            >
+              <ExternalLink size={14} />
+              View Storage
+            </button>
           </div>
 
           {/* Premium Upgrade */}
           <div className="bg-purple-600 rounded-xl p-6 text-white">
             <h2 className="text-xl font-bold mb-2">Upgrade Premium to Get More Features</h2>
             <p className="text-purple-200 mb-4">Enjoy full features & unlimited storage for your videos</p>
-            <button className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium mb-4 w-full">
+            <button
+              className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium mb-4 w-full"
+              onClick={() => router.push("/dashboard/subscription")}
+            >
               Get Pro Now
             </button>
             <p className="text-xs text-purple-200 text-center">© 2024 JOSS AI. All Rights Reserved.</p>
