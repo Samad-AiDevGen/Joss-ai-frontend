@@ -2,10 +2,11 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+// import { useRouter } from "next/navigation"
+import Navbar from "@/components/Navbar"
 
 export default function Home() {
-  const router = useRouter()
+  // const router = useRouter()
 
   return (
     <main className="relative overflow-x-hidden">
@@ -22,37 +23,7 @@ export default function Home() {
       </div>
 
       {/* Navbar */}
-      <nav className="w-full max-w-[1440px] h-auto min-h-[74px] flex flex-col md:flex-row justify-between items-center border-b-2 border-gray-200 py-[15px] px-4 md:px-[80px] relative z-10">
-        <div className="flex items-center mb-4 md:mb-0">
-          <div className="flex items-center">
-            <Image src="/joss-logo.png" alt="JOSS Logo" width={80} height={30} priority />
-          </div>
-        </div>
-
-        <div className="flex space-x-4 md:space-x-8 mb-4 md:mb-0">
-          <Link href="/about-us" className="font-poppins text-sm">
-            About Us
-          </Link>
-          <Link href="/contact-us" className="font-poppins text-sm">
-            Contact
-          </Link>
-        </div>
-
-        <div className="flex items-center space-x-2 md:space-x-4">
-          <Link href="/login" className="font-poppins text-sm text-purple-600">
-            Login
-          </Link>
-          <Link href="/signup" className="font-poppins text-sm text-purple-600">
-            Sign Up
-          </Link>
-          <button
-            className="bg-purple-600 text-white font-poppins text-sm py-2 px-4 rounded-md"
-            onClick={() => router.push("/download")}
-          >
-            Download App
-          </button>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative w-full max-w-[1440px] h-auto min-h-[613px] bg-white shadow-[0px_4px_20px_4px_rgba(0,0,0,0.1)] z-10">
@@ -392,46 +363,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Download App Section */}
-      <section className="w-full max-w-[1440px] py-20 px-4 md:px-[80px] bg-[#0D0B21] text-white relative overflow-hidden">
+      {/* Download App Section - Fixed to match Figma design exactly */}
+      <section className="w-full bg-[#0D0B21] text-white relative overflow-hidden">
         {/* Background Image */}
-        <div className="absolute inset-0" style={{ top: "1px" }}>
-          <Image
-            src="/bg.png"
-            alt="Background"
-            width={1439}
-            height={454}
-            className="w-full h-full object-contain"
-            style={{ objectPosition: "center" }}
-          />
+        <div className="absolute inset-0">
+          <Image src="/bg.png" alt="Background" fill className="object-cover" />
         </div>
 
-        <div className="flex flex-col lg:flex-row items-center justify-between relative z-10 gap-8">
-          <div className="w-full lg:w-[500px] text-center lg:text-left">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Download Our App
-              <br />
-              <span className="text-purple-400">Design And Download</span>
-              <br />
-              Our App Free
-            </h2>
-            <div className="flex flex-wrap justify-center lg:justify-start mt-8 gap-4">
-              <Link href="#">
-                <Image src="/app-store.png" alt="App Store" width={150} height={50} />
-              </Link>
-              <Link href="#">
-                <Image src="/play-store.png" alt="Play Store" width={150} height={50} />
-              </Link>
+        <div className="max-w-[1440px] mx-auto h-[455px] relative">
+          <div className="flex flex-col md:flex-row h-full">
+            {/* Mobile Image - Positioned exactly as in Figma */}
+            <div className="w-full md:w-1/2 h-full flex justify-center items-center">
+  <div
+    className="relative mt-[20px]" // 👈 Adjust this value as needed
+    style={{ width: "220px", height: "440px" }}
+  >
+    <Image src="/Mobile.png" alt="App Mockup" width={242} height={484} className="object-contain" />
+  </div>
+</div>
+
+
+
+            {/* Text Content - Right side with exact dimensions */}
+            <div className="w-full md:w-1/2 h-full flex items-center">
+              <div className="w-[410px] h-[237px] flex flex-col justify-center p-6 md:p-0 text-center md:text-left">
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Download Our App</h2>
+                <h3 className="text-2xl md:text-4xl font-bold mb-6">
+                  <span className="text-white">Design And Download</span>
+                  <br />
+                  <span className="text-purple-400">Our App Free</span>
+                </h3>
+
+                <div className="flex flex-col sm:flex-row gap-[40px] justify-center md:justify-start">
+                  <Link href="#">
+                    <Image src="/app-store.png" alt="App Store" width={150} height={50} className="h-[50px] w-auto" />
+                  </Link>
+                  <Link href="#">
+                    <Image
+                      src="/play-store.png"
+                      alt="Google Play"
+                      width={150}
+                      height={50}
+                      className="h-[50px] w-auto"
+                    />
+                  </Link>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="w-full lg:w-[500px] flex justify-center">
-            <Image src="/Mobile.png" alt="App Mockup" width={300} height={600} className="mx-auto" />
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="w-full max-w-[1440px] py-16 px-4 md:px-[80px] bg-white border-t">
+      <footer className="w-full max-w-[1440px] mx-auto py-16 px-4 md:px-[80px] bg-white border-t">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
             <Image src="/joss-logo.png" alt="JOSS Logo" width={80} height={30} className="mb-4" />

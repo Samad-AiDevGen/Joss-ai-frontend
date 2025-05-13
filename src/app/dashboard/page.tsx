@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Heart, Play, Search, Bell, Upload, Menu, X, ChevronDown, ExternalLink } from "lucide-react"
+import { Heart, Play, Search, Bell, Upload, ChevronDown, ExternalLink, Database, Crown } from "lucide-react"
 import UploadDialog from "@/components/upload-dialog" // Upload Photo Dialog
 import VideoGenerator from "@/components/video-generator" // Video Generator Dialog
 import VideoCall from "@/components/video-call" // Video Call Component
@@ -85,7 +85,17 @@ export default function Dashboard() {
   const [activeVideoCall, setActiveVideoCall] = useState<VideoCardProps | null>(null)
   const [activeExportVideo, setActiveExportVideo] = useState<VideoCardProps | null>(null)
   const [activeEditVideo, setActiveEditVideo] = useState<VideoCardProps | null>(null)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Add this useEffect hook to your Dashboard component
+  useEffect(() => {
+    // Add a class to the body element when the dashboard mounts
+    document.body.classList.add("dashboard-page")
+
+    // Clean up function to remove the class when component unmounts
+    return () => {
+      document.body.classList.remove("dashboard-page")
+    }
+  }, [])
 
   const recentVideos = [
     {
@@ -154,10 +164,6 @@ export default function Dashboard() {
     }
   }
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen)
-  }
-
   const navigateToProfile = () => {
     router.push("/dashboard/profile")
   }
@@ -168,139 +174,40 @@ export default function Dashboard() {
 
   return (
     <div className="relative">
-      {/* Mobile Menu Button - Only visible on small screens */}
-      <button
-        className="fixed top-4 right-4 z-50 md:hidden bg-white p-2 rounded-full shadow-md"
-        onClick={toggleMobileMenu}
-      >
-        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
+      {/* Upload Dialog */}
+      <UploadDialog
+        isOpen={isUploadDialogOpen}
+        onClose={() => setIsUploadDialogOpen(false)}
+        onUploadComplete={handleUploadComplete}
+      />
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />
-      )}
+      {/* Video Call */}
+      <VideoCall
+        isOpen={!!activeVideoCall}
+        onClose={() => handleVideoCallEnd(activeVideoCall?.id || "")}
+        videoData={activeVideoCall || { id: "", title: "", thumbnail: "" }}
+      />
 
-      {/* Mobile Menu */}
-      <div
-        className={`fixed top-0 right-0 h-full w-[250px] bg-white z-40 transform transition-transform duration-300 ease-in-out ${mobileMenuOpen ? "translate-x-0" : "translate-x-full"} md:hidden overflow-auto`}
-      >
-        <div className="p-6 space-y-6">
-          <div className="flex items-center gap-2 mb-8">
-            <div className="w-10 h-10 rounded-full overflow-hidden">
-              <Image src="/professional-headshot.png" alt="Rob John Gonzalez" width={40} height={40} />
-            </div>
-            <div>
-              <p className="font-medium">Rob John Gonzalez</p>
-              <p className="text-xs text-gray-500">Premium User</p>
-            </div>
-          </div>
+      {/* Export Video */}
+      <ExportVideo
+        isOpen={!!activeExportVideo}
+        onClose={() => setActiveExportVideo(null)}
+        videoData={activeExportVideo || { id: "", title: "", thumbnail: "", duration: "" }}
+      />
 
-          <button className="w-full bg-purple-100 text-purple-600 px-4 py-2 rounded-lg text-sm font-medium mb-4">
-            Download App
-          </button>
+      {/* Edit Video */}
+      <EditVideo
+        isOpen={!!activeEditVideo}
+        onClose={() => setActiveEditVideo(null)}
+        videoData={activeEditVideo || { id: "", title: "", thumbnail: "", duration: "" }}
+      />
 
-          {/* Storage Section from Sidebar */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 14C4.7 14 2 11.3 2 8C2 4.7 4.7 2 8 2C11.3 2 14 4.7 14 8C14 11.3 11.3 14 8 14Z"
-                    fill="#4F46E5"
-                  />
-                  <path d="M8 4C6.9 4 6 4.9 6 6C6 7.1 6.9 8 8 8C9.1 8 10 7.1 10 6C10 4.9 9.1 4 8 4Z" fill="#4F46E5" />
-                  <path d="M8 9C5.9 9 4 10.3 4 12V13H12V12C12 10.3 10.1 9 8 9Z" fill="#4F46E5" />
-                </svg>
-              </div>
-              <h2 className="text-base font-bold">Storage</h2>
-            </div>
-
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mr-3 relative">
-                  <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
-                    66%
-                  </div>
-                  <svg className="absolute inset-0" width="48" height="48" viewBox="0 0 48 48">
-                    <circle
-                      cx="24"
-                      cy="24"
-                      r="21"
-                      fill="none"
-                      stroke="#4F46E5"
-                      strokeWidth="6"
-                      strokeDasharray="131.9 131.9"
-                      strokeDashoffset="45"
-                      transform="rotate(-90 24 24)"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-bold text-sm">18.2 GB</p>
-                  <p className="text-xs text-gray-500">of 27.5 GB</p>
-                </div>
-              </div>
-            </div>
-
-            <button
-              className="w-full mt-3 bg-indigo-100 text-indigo-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1"
-              onClick={() => router.push("/dashboard/storage")}
-            >
-              <ExternalLink size={14} />
-              View Storage
-            </button>
-          </div>
-
-          {/* Premium Upgrade from Sidebar */}
-          <div className="bg-purple-600 rounded-xl p-4 text-white">
-            <h2 className="text-lg font-bold mb-2">Upgrade Premium</h2>
-            <p className="text-purple-200 text-sm mb-4">Enjoy full features & unlimited storage</p>
-            <button
-              className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium mb-2 w-full text-sm"
-              onClick={() => router.push("/dashboard/subscription")}
-            >
-              Get Pro Now
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
+      {/* Main Content Area */}
       <div className="flex flex-col md:flex-row p-4 md:p-6">
-        {/* Upload Dialog */}
-        <UploadDialog
-          isOpen={isUploadDialogOpen}
-          onClose={() => setIsUploadDialogOpen(false)}
-          onUploadComplete={handleUploadComplete}
-        />
-
-        {/* Video Call */}
-        <VideoCall
-          isOpen={!!activeVideoCall}
-          onClose={() => handleVideoCallEnd(activeVideoCall?.id || "")}
-          videoData={activeVideoCall || { id: "", title: "", thumbnail: "" }}
-        />
-
-        {/* Export Video */}
-        <ExportVideo
-          isOpen={!!activeExportVideo}
-          onClose={() => setActiveExportVideo(null)}
-          videoData={activeExportVideo || { id: "", title: "", thumbnail: "", duration: "" }}
-        />
-
-        {/* Edit Video */}
-        <EditVideo
-          isOpen={!!activeEditVideo}
-          onClose={() => setActiveEditVideo(null)}
-          videoData={activeEditVideo || { id: "", title: "", thumbnail: "", duration: "" }}
-        />
-
-        {/* Main Content Area */}
         <div className="flex-1 md:pr-6">
-          {/* Header */}
+          {/* Header - Added pl-12 for mobile to make space for the sidebar toggle */}
           <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 md:mb-8 gap-4">
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <div className="flex flex-col md:flex-row md:items-center gap-4 pl-12 md:pl-0">
               <div>
                 <h1 className="text-xl md:text-2xl font-bold">Joss AI</h1>
                 <p className="text-sm text-gray-500">(Image to video generator)</p>
@@ -470,8 +377,54 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Mobile Bottom Cards - Only visible on mobile */}
+      <div className="block md:hidden px-4 pb-6 space-y-4">
+        {/* Storage Card */}
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3">
+                <Database className="h-4 w-4 text-indigo-600" />
+              </div>
+              <h2 className="text-base font-bold">Storage</h2>
+            </div>
+            <div className="text-right">
+              <p className="font-bold text-sm">18.2 GB</p>
+              <p className="text-xs text-gray-500">of 27.5 GB</p>
+            </div>
+          </div>
+
+          <div className="mt-3 w-full bg-gray-200 rounded-full h-2.5">
+            <div className="bg-indigo-600 h-2.5 rounded-full" style={{ width: "66%" }}></div>
+          </div>
+
+          <button
+            className="w-full mt-3 bg-indigo-100 text-indigo-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1"
+            onClick={() => router.push("/dashboard/storage")}
+          >
+            <ExternalLink size={14} />
+            View Storage
+          </button>
+        </div>
+
+        {/* Premium Card */}
+        <div className="bg-purple-600 rounded-xl p-4 text-white">
+          <div className="flex items-center mb-2">
+            <Crown className="h-5 w-5 mr-2 text-yellow-300" />
+            <h2 className="text-lg font-bold">Upgrade Premium</h2>
+          </div>
+          <p className="text-purple-200 text-sm mb-3">Enjoy full features & unlimited storage</p>
+          <button
+            className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium w-full text-sm"
+            onClick={() => router.push("/dashboard/subscription")}
+          >
+            Get Pro Now
+          </button>
+        </div>
+      </div>
+
       {/* Mobile Footer - Only visible on mobile */}
-      <div className="block md:hidden mt-8 p-4 text-center text-xs text-gray-500">
+      <div className="block md:hidden mt-2 p-4 text-center text-xs text-gray-500">
         © 2024 JOSS AI. All Rights Reserved.
       </div>
 

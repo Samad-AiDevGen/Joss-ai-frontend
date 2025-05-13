@@ -5,6 +5,7 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Phone, MapPin, Mail, Send } from "lucide-react"
+import Navbar from "@/components/Navbar"
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -39,61 +40,32 @@ export default function ContactUs() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="flex items-center justify-between px-8 py-4 border-b">
-        <div className="flex items-center">
-          <Link href="/">
-            <Image src="/joss-logo.png" alt="JOSS Logo" width={100} height={40} />
-          </Link>
-          <nav className="ml-10">
-            <ul className="flex space-x-6">
-              <li>
-                <Link href="/" className="text-gray-600 hover:text-purple-600">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-gray-600 hover:text-purple-600">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-purple-600 font-medium">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        <div className="flex items-center space-x-4">
-          <Link href="/login" className="text-gray-600 hover:text-purple-600">
-            Sign In
-          </Link>
-          <Link
-            href="/signup"
-            className="bg-[#B25CD9] text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
-          >
-            Create Account
-          </Link>
-        </div>
-      </header>
+      <Navbar />
 
-      {/* Hero Section */}
-      <div className="relative w-full h-[320px] bg-[#4F46E5]">
+      {/* Hero Section - Fixed for mobile */}
+      <div className="relative w-full h-[250px] sm:h-[280px] md:h-[320px] bg-[#4F46E5] overflow-hidden">
         <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto px-8">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 z-10">
             <div className="max-w-lg">
-              <h1 className="text-4xl font-bold text-white mb-2">Contact Us</h1>
+              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Contact Us</h1>
               <p className="text-white/80">We&apos;re here for you</p>
             </div>
           </div>
-          <div className="absolute right-0 top-0 h-full w-1/3">
-            <Image
-              src="/customer-service-representative.png"
-              alt="Customer Support"
-              width={320}
-              height={320}
-              className="h-full w-full object-cover rounded-l-full"
-            />
+
+          {/* Fixed image positioning for mobile */}
+          <div className="absolute right-[-30%] sm:right-[-15%] md:right-0 top-0 h-full w-[80%] sm:w-[60%] md:w-1/3">
+            <div className="relative h-full w-full">
+              <Image
+                src="/customer-service-representative.png"
+                alt="Customer Support"
+                width={320}
+                height={320}
+                className="h-full w-full object-cover rounded-l-full"
+                priority
+              />
+              {/* Gradient overlay to improve text readability on mobile */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#4F46E5] to-transparent md:hidden"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -101,20 +73,19 @@ export default function ContactUs() {
       {/* Main Content */}
       <main className="flex-grow">
         {/* Feel Free to Contact Section */}
-        <section className="container mx-auto px-8 py-12">
-          <h2 className="text-2xl font-bold text-center mb-6">Feel free to contact</h2>
-          <p className="text-gray-600 max-w-3xl mx-auto text-center mb-12">
+        <section className="container mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12">
+          <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 md:mb-6">Feel free to contact</h2>
+          <p className="text-gray-600 max-w-3xl mx-auto text-center text-sm sm:text-base mb-8 md:mb-12">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae sapien hendrerit, dignissim erat sit
-            amet, rhoncus nibh. Cras sagittatis erat in tortor. Vestibulum ante ipsum primis in faucibus orci luctus et
-            ultrices posuere cubilia curae; Fusce a ante euismod, rhoncus tortor et, porta enim. Aenean a sem finibus,
-            pulvinar dolor a, elementum velit.
+            amet, rhoncus nibh. Cras sagittis erat in tortor. Vestibulum ante ipsum primis in faucibus orci luctus et
+            ultrices posuere cubilia curae; Fusce a ante euismod, rhoncus tortor et, porta enim.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             {/* Contact Form */}
-            <div className="bg-white rounded-lg shadow-sm p-8">
-              <h3 className="text-xl font-semibold mb-6">Let&apos;s talk with us</h3>
-              <p className="text-gray-600 mb-6">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 md:p-8 order-2 md:order-1">
+              <h3 className="text-lg sm:text-xl font-semibold mb-4 md:mb-6">Let&apos;s talk with us</h3>
+              <p className="text-gray-600 text-sm sm:text-base mb-4 md:mb-6">
                 Send us a message, feedback, or suggestion so that we can help you with your project or answer any
                 questions.
               </p>
@@ -173,7 +144,7 @@ export default function ContactUs() {
 
                 <button
                   type="submit"
-                  className="w-full bg-[#B25CD9] text-white py-3 rounded-md hover:bg-purple-700 transition-colors flex items-center justify-center"
+                  className="w-full bg-[#B25CD9] text-white py-2 sm:py-3 rounded-md hover:bg-purple-700 transition-colors flex items-center justify-center"
                 >
                   <Send className="h-4 w-4 mr-2" />
                   Send Message
@@ -181,40 +152,42 @@ export default function ContactUs() {
               </form>
             </div>
 
-            {/* Contact Information */}
-            <div className="flex flex-col justify-center">
-              <div className="mb-8">
-                <div className="flex items-start mb-4">
-                  <div className="bg-purple-100 p-3 rounded-full mr-4">
-                    <MapPin className="h-6 w-6 text-purple-600" />
+            {/* Contact Information - Improved for mobile */}
+            <div className="flex flex-col justify-start md:justify-center order-1 md:order-2 mb-8 md:mb-0">
+              <div className="mb-6 md:mb-8">
+                <div className="flex items-start">
+                  <div className="bg-purple-100 p-3 rounded-full mr-4 flex-shrink-0">
+                    <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 mb-1">Our Location</h4>
-                    <p className="text-gray-600">Lorem ipsum is simply dummy text of the printing</p>
+                    <p className="text-gray-600 text-sm sm:text-base">
+                      Lorem ipsum is simply dummy text of the printing
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mb-8">
-                <div className="flex items-start mb-4">
-                  <div className="bg-purple-100 p-3 rounded-full mr-4">
-                    <Phone className="h-6 w-6 text-purple-600" />
+              <div className="mb-6 md:mb-8">
+                <div className="flex items-start">
+                  <div className="bg-purple-100 p-3 rounded-full mr-4 flex-shrink-0">
+                    <Phone className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 mb-1">Phone Number</h4>
-                    <p className="text-gray-600">+123 456 789</p>
+                    <p className="text-gray-600 text-sm sm:text-base">+123 456 789</p>
                   </div>
                 </div>
               </div>
 
-              <div className="mb-8">
-                <div className="flex items-start mb-4">
-                  <div className="bg-purple-100 p-3 rounded-full mr-4">
-                    <Mail className="h-6 w-6 text-purple-600" />
+              <div className="mb-6 md:mb-8">
+                <div className="flex items-start">
+                  <div className="bg-purple-100 p-3 rounded-full mr-4 flex-shrink-0">
+                    <Mail className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 mb-1">Email Address</h4>
-                    <p className="text-gray-600">contact@jossai.com</p>
+                    <p className="text-gray-600 text-sm sm:text-base">contact@jossai.com</p>
                   </div>
                 </div>
               </div>
@@ -222,30 +195,30 @@ export default function ContactUs() {
           </div>
         </section>
 
-        {/* Newsletter Section */}
-        <section className="relative w-full py-16">
+        {/* Newsletter Section - Improved for mobile */}
+        <section className="relative w-full py-12 md:py-16">
           <div className="absolute inset-0">
             <Image src="/low-bg.png" alt="Newsletter Background" fill className="object-cover" />
           </div>
-          <div className="container mx-auto px-8 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-2xl font-bold text-white mb-4">Subscribe to our Newsletter</h2>
-              <p className="text-white/70 mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 md:mb-4">Subscribe to our Newsletter</h2>
+              <p className="text-white/70 text-sm sm:text-base mb-6 md:mb-8 px-2">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae sapien hendrerit, dignissim erat
-                sit amet, rhoncus nibh. Cras sagittatis erat in tortor. Vestibulum ante ipsum primis in faucibus orci.
+                sit amet, rhoncus nibh.
               </p>
-              <form onSubmit={handleNewsletterSubmit} className="flex max-w-md mx-auto">
+              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row max-w-md mx-auto">
                 <input
                   type="email"
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="flex-grow px-4 py-2 rounded-l-md focus:outline-none"
+                  className="w-full px-4 py-2 rounded-md sm:rounded-l-md sm:rounded-r-none mb-2 sm:mb-0 focus:outline-none"
                   required
                 />
                 <button
                   type="submit"
-                  className="bg-[#B25CD9] text-white px-6 py-2 rounded-r-md hover:bg-purple-700 transition-colors"
+                  className="bg-[#B25CD9] text-white px-6 py-2 rounded-md sm:rounded-l-none sm:rounded-r-md hover:bg-purple-700 transition-colors"
                 >
                   Subscribe
                 </button>
@@ -255,19 +228,19 @@ export default function ContactUs() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white py-12 border-t">
-        <div className="container mx-auto px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {/* Footer - Improved for mobile */}
+      <footer className="bg-white py-8 md:py-12 border-t">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <Image src="/joss-logo.png" alt="JOSS Logo" width={120} height={48} className="mb-4" />
+              <Image src="/joss-logo.png" alt="JOSS Logo" width={100} height={40} className="mb-4" />
               <p className="text-gray-600 text-sm mb-4">
                 Lorem ipsum is simply dummy text of the printing and typesetting industry.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">Services</h4>
+              <h4 className="font-semibold text-gray-900 mb-3 md:mb-4">Services</h4>
               <ul className="space-y-2">
                 <li>
                   <Link href="/services" className="text-gray-600 hover:text-purple-600 text-sm">
@@ -292,8 +265,8 @@ export default function ContactUs() {
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4">About</h4>
+            <div className="sm:col-span-2 md:col-span-1">
+              <h4 className="font-semibold text-gray-900 mb-3 md:mb-4">About</h4>
               <ul className="space-y-2">
                 <li>
                   <Link href="/about" className="text-gray-600 hover:text-purple-600 text-sm">
@@ -318,10 +291,10 @@ export default function ContactUs() {
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4">Contact us</h4>
+            <div className="sm:col-span-2 md:col-span-1">
+              <h4 className="font-semibold text-gray-900 mb-3 md:mb-4">Contact us</h4>
               <p className="text-gray-600 text-sm mb-2">Lorem ipsum is simply dummy text of the printing</p>
-              <p className="text-gray-900 font-medium mb-4">+123 456 789</p>
+              <p className="text-gray-900 font-medium mb-3 md:mb-4">+123 456 789</p>
               <div className="flex space-x-4">
                 <Link href="#" className="text-gray-400 hover:text-purple-600">
                   <svg
@@ -360,7 +333,7 @@ export default function ContactUs() {
             </div>
           </div>
 
-          <div className="border-t mt-12 pt-8 text-center">
+          <div className="border-t mt-8 md:mt-12 pt-6 md:pt-8 text-center">
             <p className="text-gray-500 text-sm">
               © 2024 Copyright by <span className="font-medium">JOSS AI</span>. All rights reserved.
             </p>

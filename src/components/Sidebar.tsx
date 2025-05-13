@@ -47,12 +47,12 @@ export default function Sidebar() {
     {
       icon: <Settings size={20} />,
       label: "Settings",
-      href: "/dashboard/settings",
+      href: "/dashboard/storage",
     },
     {
       icon: <Crown size={20} />,
       label: "Premium",
-      href: "/dashboard/premium",
+      href: "/dashboard/subscription",
     },
     {
       icon: <HelpCircle size={20} />,
@@ -63,10 +63,10 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Toggle Button - Visible only on mobile */}
+      {/* Mobile Toggle Button - Added sidebar-toggle class */}
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-50 md:hidden bg-white p-2 rounded-md shadow-md"
+        className="sidebar-toggle fixed top-4 left-4 z-50 md:hidden bg-white p-2 rounded-md shadow-md"
         aria-label="Toggle Sidebar"
       >
         {isCollapsed ? (
@@ -105,7 +105,7 @@ export default function Sidebar() {
 
       {/* Sidebar - Hidden on mobile when collapsed */}
       <aside
-        className={`w-[240px] min-h-screen border-r border-gray-200 bg-white flex flex-col fixed md:relative z-40 transition-all duration-300 ${
+        className={`w-[240px] h-screen border-r border-gray-200 bg-white flex flex-col fixed md:relative z-40 transition-all duration-300 ${
           isCollapsed ? "-translate-x-full" : "translate-x-0"
         } md:translate-x-0`}
       >
@@ -116,8 +116,8 @@ export default function Sidebar() {
           </Link>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-3">
+        {/* Navigation - Make this section scrollable */}
+        <nav className="flex-1 px-3 overflow-y-auto">
           <div className="space-y-1">
             {sidebarItems.map((item) => (
               <SidebarItem
@@ -131,8 +131,8 @@ export default function Sidebar() {
           </div>
         </nav>
 
-        {/* Sign Out Button */}
-        <div className="p-4 mt-auto">
+        {/* Sign Out Button - Fixed at the bottom */}
+        <div className="p-4 border-t border-gray-200 bg-white">
           <button className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors">
             <Upload size={18} />
             <span>Sign Out</span>

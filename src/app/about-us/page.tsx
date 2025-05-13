@@ -2,48 +2,16 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+// import { useRouter } from "next/navigation"
+import Navbar from "@/components/Navbar"
 
 export default function AboutUs() {
-  const router = useRouter()
+  // const router = useRouter()
 
   return (
     <main className="flex flex-col items-center w-full bg-white">
       {/* Navigation Bar */}
-      <nav className="w-full max-w-[1440px] h-auto min-h-[74px] flex flex-col md:flex-row justify-between items-center border-b-2 border-gray-200 py-[15px] px-4 md:px-[80px] relative z-10">
-        <div className="flex items-center mb-4 md:mb-0">
-          <div className="flex items-center">
-            <Image src="/joss-logo.png" alt="JOSS Logo" width={80} height={30} priority />
-          </div>
-        </div>
-
-        <div className="flex space-x-4 md:space-x-8 mb-4 md:mb-0">
-          <Link href="/" className="font-poppins text-sm">
-            Home
-          </Link>
-          <Link href="/dashboard/about-us" className="font-poppins text-sm border-b-2 border-[#B25CD9]">
-            About Us
-          </Link>
-          <Link href="/dashboard/contact-us" className="font-poppins text-sm">
-            Contact
-          </Link>
-        </div>
-
-        <div className="flex items-center space-x-2 md:space-x-4">
-          <Link href="/login" className="font-poppins text-sm text-[#B25CD9]">
-            Log In
-          </Link>
-          <Link href="/signup" className="font-poppins text-sm text-[#B25CD9]">
-            Sign Up
-          </Link>
-          <button
-            className="bg-[#B25CD9] text-white font-poppins text-sm py-2 px-4 rounded-md"
-            onClick={() => router.push("/download")}
-          >
-            Download app
-          </button>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="w-full bg-[#4338CA] bg-gradient-to-r from-[#4338CA] to-[#6366F1] relative overflow-hidden">
@@ -90,12 +58,7 @@ export default function AboutUs() {
         <div className="max-w-[1440px] mx-auto px-4 md:px-[80px] flex flex-col md:flex-row items-center gap-8 md:gap-16">
           <div className="w-full md:w-1/2 relative">
             <div className="rounded-full overflow-hidden w-full max-w-[500px] h-[400px] relative mx-auto">
-              <Image
-                src="/genAi.png"
-                alt="Generative AI laptop interface"
-                fill
-                className="object-cover"
-              />
+              <Image src="/genAi.png" alt="Generative AI laptop interface" fill className="object-cover" />
             </div>
             <div className="absolute -top-10 -left-10 opacity-20 pointer-events-none">
               <Image src="/group82.png" alt="Decorative dots pattern" width={150} height={150} />
@@ -226,13 +189,7 @@ export default function AboutUs() {
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                <Image
-                  src="/hello.png"
-                  alt="Gloria Uko from Nigeria"
-                  width={48}
-                  height={48}
-                  className="object-cover"
-                />
+                <Image src="/hello.png" alt="Gloria Uko from Nigeria" width={48} height={48} className="object-cover" />
               </div>
               <div>
                 <h3 className="font-bold text-[#0D0B21]">Gloria Uko</h3>
@@ -270,12 +227,7 @@ export default function AboutUs() {
           </div>
         </div>
         <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <Image
-            src="/placeholder.svg?height=600&width=1440&query=code on computer screen"
-            alt="Code background"
-            fill
-            className="object-cover"
-          />
+          <Image src="/code-on-screen.png" alt="Code background" fill className="object-cover" />
         </div>
       </section>
 
