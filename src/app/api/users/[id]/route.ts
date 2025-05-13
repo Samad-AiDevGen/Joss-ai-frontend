@@ -1,9 +1,10 @@
 // src/app/api/users/[id]/route.ts
 import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
 import dbConnect from '@/lib/mongoose';
 import User from '@/models/User';
 
-// Get individual user by ID
+// Fix the type definition for the handler
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
@@ -11,6 +12,14 @@ export async function GET(
   try {
     await dbConnect();
     const id = params.id;
+    
+    // Validate ObjectId format
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid ID format' },
+        { status: 400 }
+      );
+    }
     
     const user = await User.findById(id).select('-password');
     
@@ -31,7 +40,7 @@ export async function GET(
   }
 }
 
-// Update user by ID
+// Also update PUT and DELETE handlers with the same parameter pattern
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
@@ -39,14 +48,23 @@ export async function PUT(
   try {
     await dbConnect();
     const id = params.id;
+    
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid ID format' },
+        { status: 400 }
+      );
+    }
+    
     const body = await request.json();
     
-    // Don't allow updating password through this route for security
+    // Remove fields that shouldn't be updated directly
+    delete body.password;
     const updateData = body;
     
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { ...updateData },
+      { ...updateData, updatedAt: new Date() },
       { new: true, runValidators: true }
     ).select('-password');
     
@@ -71,7 +89,6 @@ export async function PUT(
   }
 }
 
-// Delete user by ID
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
@@ -79,6 +96,13 @@ export async function DELETE(
   try {
     await dbConnect();
     const id = params.id;
+    
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid ID format' },
+        { status: 400 }
+      );
+    }
     
     const deletedUser = await User.findByIdAndDelete(id);
     
