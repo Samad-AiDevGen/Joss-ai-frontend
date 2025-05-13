@@ -8,6 +8,9 @@ interface NavbarDashboardProps {
   subtitle?: string
   showUploadButton?: boolean
   onUploadClick?: () => void
+  onLogout?: () => void // Add logout handler
+  user: { name: string; email: string; avatarUrl?: string } | null // Add user property
+  
 }
 
 export default function NavbarDashboard({

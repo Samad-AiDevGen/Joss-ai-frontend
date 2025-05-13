@@ -1,12 +1,14 @@
+// src/app/signup/page.tsx
 "use client"
 
-import type React from "react"
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export default function Signup() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     username: "",
@@ -14,6 +16,8 @@ export default function Signup() {
     password: "",
     agreeToTerms: false,
   })
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
@@ -23,10 +27,39 @@ export default function Signup() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission logic here
-    console.log("Form submitted:", formData)
+    setIsLoading(true)
+    setError("")
+
+    try {
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create account")
+      }
+
+      // If signup successful, redirect to login page
+      alert("Account created successfully! Please log in.")
+      router.push("/login")
+    } catch (err) {
+      console.error("Signup error:", err)
+      setError(err instanceof Error ? err.message : "An unexpected error occurred")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -39,10 +72,10 @@ export default function Signup() {
 
           {/* Social Login Buttons */}
           <div className="flex gap-4 mb-6">
-            <button className="flex-1 flex items-center justify-center gap-2 bg-[#B25CD9] hover:bg-purple-700 text-white py-2.5 px-4 rounded-md transition-colors">
+            <button type="button" className="flex-1 flex items-center justify-center gap-2 bg-[#B25CD9] hover:bg-purple-700 text-white py-2.5 px-4 rounded-md transition-colors">
               <span>G</span>
             </button>
-            <button className="flex-1 flex items-center justify-center gap-2 bg-[#F4F7FE] hover:bg-gray-100 text-gray-700 py-2.5 px-4 rounded-md transition-colors">
+            <button type="button" className="flex-1 flex items-center justify-center gap-2 bg-[#F4F7FE] hover:bg-gray-100 text-gray-700 py-2.5 px-4 rounded-md transition-colors">
               <span>Apple</span>
             </button>
           </div>
@@ -52,6 +85,13 @@ export default function Signup() {
             <span className="flex-shrink mx-4 text-gray-400 text-sm">or</span>
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -146,9 +186,12 @@ export default function Signup() {
 
             <button
               type="submit"
-              className="w-full bg-[#B25CD9] text-white py-2.5 rounded-md hover:bg-purple-700 transition-colors font-medium"
+              disabled={isLoading}
+              className={`w-full bg-[#B25CD9] text-white py-2.5 rounded-md hover:bg-purple-700 transition-colors font-medium ${
+                isLoading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              Sign Up
+              {isLoading ? "Creating Account..." : "Sign Up"}
             </button>
           </form>
 

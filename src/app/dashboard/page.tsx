@@ -86,9 +86,40 @@ export default function Dashboard() {
   const [activeVideoCall, setActiveVideoCall] = useState<VideoCardProps | null>(null)
   const [activeExportVideo, setActiveExportVideo] = useState<VideoCardProps | null>(null)
   const [activeEditVideo, setActiveEditVideo] = useState<VideoCardProps | null>(null)
+  interface User {
+    id: string
+    name: string
+    email: string
+    // Add other fields as needed
+  }
 
-  // Add this useEffect hook to your Dashboard component
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Authentication check and dashboard setup
   useEffect(() => {
+    // Check for JWT token
+    const token = localStorage.getItem('Joss_Id')
+    if (!token) {
+      // If no token, redirect to login
+      router.push('/login')
+      return
+    }
+
+    // Get user info if available
+    try {
+      const userInfo = localStorage.getItem('user')
+      if (userInfo) {
+        setUser(JSON.parse(userInfo))
+        const parsedUserInfo = JSON.parse(userInfo);
+        console.log("This is a protected route, user logged in with", parsedUserInfo.id || "unknown ID")
+      }
+    } catch (error) {
+      console.error("Error parsing user data:", error)
+    }
+
+    setIsLoading(false)
+
     // Add a class to the body element when the dashboard mounts
     document.body.classList.add("dashboard-page")
 
@@ -96,7 +127,19 @@ export default function Dashboard() {
     return () => {
       document.body.classList.remove("dashboard-page")
     }
-  }, [])
+  }, [router])
+
+  // If still checking authentication, show loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="p-4 text-center">
+          <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   const recentVideos = [
     {
@@ -169,6 +212,14 @@ export default function Dashboard() {
     router.push("/dashboard/storage")
   }
 
+  const handleLogout = () => {
+    // Clear JWT token and user info
+    localStorage.removeItem('Joss_Id')
+    localStorage.removeItem('user')
+    // Redirect to login page
+    router.push('/login')
+  }
+
   return (
     <div className="relative">
       {/* Upload Dialog */}
@@ -208,6 +259,8 @@ export default function Dashboard() {
             subtitle="Image to video generator"
             showUploadButton={true}
             onUploadClick={() => setIsUploadDialogOpen(true)}
+            onLogout={handleLogout} // Add logout handler
+            user={user} // Pass user info to navbar if your component supports it
           />
 
           {/* Hero Banner */}

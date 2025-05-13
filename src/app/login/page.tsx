@@ -1,27 +1,68 @@
+// src/app/login/page.tsx
 "use client"
 
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function Login() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   })
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     })
+    // Clear error when user changes input
+    if (error) setError("")
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Handle form submission logic here
-    console.log("Form submitted:", formData)
+    setIsLoading(true)
+    setError("")
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed")
+      }
+
+      // Store JWT token in localStorage as Joss_Id as requested
+      localStorage.setItem("Joss_Id", data.token)
+      
+      // Also store user information if needed
+      localStorage.setItem("user", JSON.stringify({
+        id: data.user._id,
+        username: data.user.username,
+        email: data.user.email
+      }))
+      
+      // Redirect to dashboard
+      router.push("/dashboard")
+    } catch (err) {
+      console.error("Login error:", err)
+      setError(err instanceof Error ? err.message : "An unexpected error occurred")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const togglePasswordVisibility = () => {
@@ -38,10 +79,10 @@ export default function Login() {
 
           {/* Social Login Buttons */}
           <div className="flex gap-4 mb-6">
-            <button className="flex-1 flex items-center justify-center gap-2 bg-[#B25CD9] hover:bg-purple-700 text-white py-2.5 px-4 rounded-md transition-colors">
+            <button type="button" className="flex-1 flex items-center justify-center gap-2 bg-[#B25CD9] hover:bg-purple-700 text-white py-2.5 px-4 rounded-md transition-colors">
               <span>G</span>
             </button>
-            <button className="flex-1 flex items-center justify-center gap-2 bg-[#F4F7FE] hover:bg-gray-100 text-gray-700 py-2.5 px-4 rounded-md transition-colors">
+            <button type="button" className="flex-1 flex items-center justify-center gap-2 bg-[#F4F7FE] hover:bg-gray-100 text-gray-700 py-2.5 px-4 rounded-md transition-colors">
               <span>Apple</span>
             </button>
           </div>
@@ -51,6 +92,13 @@ export default function Login() {
             <span className="flex-shrink mx-4 text-gray-400 text-sm">or</span>
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -147,9 +195,12 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full bg-[#B25CD9] text-white py-2.5 rounded-md hover:bg-purple-700 transition-colors font-medium"
+              disabled={isLoading}
+              className={`w-full bg-[#B25CD9] text-white py-2.5 rounded-md hover:bg-purple-700 transition-colors font-medium ${
+                isLoading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              Sign In
+              {isLoading ? "Signing In..." : "Sign In"}
             </button>
           </form>
 

@@ -1,0 +1,52 @@
+// src/models/User.ts
+import mongoose, { Schema } from 'mongoose';
+import bcrypt from 'bcryptjs';
+
+// User Schema
+const userSchema = new Schema({
+  username: {
+    type: String,
+    required: [true, 'Please provide a username'],
+    unique: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: [true, 'Please provide an email'],
+    unique: true,
+    trim: true,
+    lowercase: true,
+  },
+  password: {
+    type: String,
+    required: [true, 'Please provide a password'],
+    minlength: 8,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  // Add these new fields
+  resetPasswordToken: String,
+  resetPasswordExpire: Date
+});
+
+// Middleware: Hash password before saving
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error: unknown) {
+    next(error as mongoose.CallbackError);
+  }
+});
+
+// Use the model if it exists (for hot reloading) or create a new one
+const User = mongoose.models.User || mongoose.model('User', userSchema);
+
+export default User;

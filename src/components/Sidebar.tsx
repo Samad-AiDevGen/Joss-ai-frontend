@@ -105,7 +105,7 @@ export default function Sidebar() {
 
       {/* Sidebar - Hidden on mobile when collapsed */}
       <aside
-        className={`w-[240px] h-screen border-r border-gray-200 bg-white flex flex-col fixed md:relative z-40 transition-all duration-300 ${
+        className={`w-[240px] h-screen border-r border-gray-200 bg-white flex flex-col fixed z-40 transition-all duration-300 ${
           isCollapsed ? "-translate-x-full" : "translate-x-0"
         } md:translate-x-0`}
       >
@@ -139,6 +139,9 @@ export default function Sidebar() {
           </button>
         </div>
       </aside>
+
+      {/* Spacer to push content away from sidebar on desktop */}
+      <div className="hidden md:block w-[240px] flex-shrink-0"></div>
 
       {/* Overlay for mobile - only visible when sidebar is open on mobile */}
       {!isCollapsed && (
