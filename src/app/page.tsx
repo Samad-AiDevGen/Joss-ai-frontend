@@ -429,7 +429,7 @@ export default function Home() {
             <h4 className="font-bold mb-4">Services</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-gray-600 hover:text-purple-600">
+                <Link href="/about-us" className="text-gray-600 hover:text-purple-600">
                   About Us
                 </Link>
               </li>
@@ -455,7 +455,7 @@ export default function Home() {
             <h4 className="font-bold mb-4">About</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-gray-600 hover:text-purple-600">
+                <Link href="/about-us" className="text-gray-600 hover:text-purple-600">
                   About Us
                 </Link>
               </li>

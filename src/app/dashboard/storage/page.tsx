@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image"
-import { Search, Bell, ChevronDown, MoreHorizontal } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { MoreHorizontal } from "lucide-react"
+import NavbarDashboard from "@/components/NavbarDashboard"
 
 export default function StoragePage() {
   const storageData = {
@@ -116,13 +116,13 @@ export default function StoragePage() {
       id: "5",
       title: "Example Photo 5",
       duration: "01:20",
-      thumbnail: "/elderly-man-red-turban.png",
+      thumbnail: "/elderly-woman-glasses.png",
     },
     {
       id: "6",
       title: "Example Photo 6",
       duration: "04:15",
-      thumbnail: "/elderly-woman-earrings.png",
+      thumbnail: "/middle-aged-man-portrait.png",
     },
     {
       id: "7",
@@ -133,188 +133,152 @@ export default function StoragePage() {
   ]
 
   return (
-    <div className="flex-1 p-3 sm:p-6 bg-gray-50">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-        <div>
-          {/* Breadcrumb */}
-          <div className="flex items-center space-x-1 text-sm text-gray-500 mb-2">
-            <span>Pages</span>
-            <span>/</span>
-            <span className="text-gray-900">Storage</span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold">Storage</h1>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="relative w-full sm:w-auto">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search"
-              className="pl-10 w-full sm:w-64 h-9 bg-gray-50 border-gray-200 focus-visible:ring-purple-500"
-            />
-          </div>
-
-          <div className="flex items-center gap-4 self-end sm:self-auto">
-            <button className="relative">
-              <Bell className="h-5 w-5 text-gray-600" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs flex items-center justify-center rounded-full">
-                3
-              </span>
-            </button>
-
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-full overflow-hidden">
-                <Image
-                  src="/professional-headshot.png"
-                  alt="Alex Jack Abimanyu"
-                  width={32}
-                  height={32}
-                  className="object-cover"
-                />
-              </div>
-              <span className="text-sm font-medium hidden sm:inline">Alex Jack Abimanyu</span>
-              <ChevronDown className="h-4 w-4 text-gray-500" />
-            </div>
-          </div>
-        </div>
+    <div className="flex-1 bg-gray-50">
+      {/* Header - Using NavbarDashboard */}
+      <div className="border-b bg-white px-6 py-3">
+        <NavbarDashboard title="Storage" showUploadButton={false} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
-        {/* Main Content Area */}
-        <div className="lg:col-span-3">
-          {/* Category Cards */}
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
-            {categories.map((category) => (
-              <div
-                key={category.id}
-                className={`${category.color} rounded-lg p-3 sm:p-4 text-white cursor-pointer hover:opacity-90 transition-opacity`}
-              >
-                <div className="flex items-center mb-1 sm:mb-2">
-                  <div className="flex-shrink-0">{category.icon}</div>
-                  <h3 className="ml-2 font-bold text-sm sm:text-base truncate">{category.title}</h3>
-                </div>
-                <p className="text-xs sm:text-sm text-white/80">{category.count}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Recent Videos */}
-          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <div className="flex items-center">
-                <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mr-2">
-                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 14C4.7 14 2 11.3 2 8C2 4.7 4.7 2 8 2C11.3 2 14 4.7 14 8C14 11.3 11.3 14 8 14Z"
-                      fill="#9333EA"
-                    />
-                    <path d="M6 5L11 8L6 11V5Z" fill="#9333EA" />
-                  </svg>
-                </div>
-                <h2 className="text-base sm:text-lg font-bold">Recent Videos</h2>
-              </div>
-              <button>
-                <MoreHorizontal className="h-5 w-5 text-gray-500" />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {recentVideos.map((video) => (
-                <div key={video.id} className="group">
-                  <div className="relative aspect-square rounded-lg overflow-hidden mb-2">
-                    <Image
-                      src={video.thumbnail || "/placeholder.svg"}
-                      alt={video.title}
-                      fill
-                      className="object-cover"
-                    />
-                    {/* Green recording indicator */}
-                    <div className="absolute top-2 right-2 bg-green-400 rounded-full w-5 sm:w-6 h-5 sm:h-6 flex items-center justify-center">
-                      <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white rounded-full"></div>
-                    </div>
+      <div className="p-3 sm:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
+          {/* Main Content Area */}
+          <div className="lg:col-span-3">
+            {/* Category Cards */}
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              {categories.map((category) => (
+                <div
+                  key={category.id}
+                  className={`${category.color} rounded-lg p-3 sm:p-4 text-white cursor-pointer hover:opacity-90 transition-opacity`}
+                >
+                  <div className="flex items-center mb-1 sm:mb-2">
+                    <div className="flex-shrink-0">{category.icon}</div>
+                    <h3 className="ml-2 font-bold text-sm sm:text-base truncate">{category.title}</h3>
                   </div>
-                  <h3 className="font-medium text-xs sm:text-sm truncate">{video.title}</h3>
-                  <div className="flex justify-between items-center mt-1">
-                    <span className="text-xs text-gray-500">{video.duration}</span>
-                    <button className="bg-indigo-900 text-white text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-md">
-                      Edit
-                    </button>
-                  </div>
+                  <p className="text-xs sm:text-sm text-white/80">{category.count}</p>
                 </div>
               ))}
             </div>
+
+            {/* Recent Videos */}
+            <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <div className="flex items-center">
+                  <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mr-2">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 14C4.7 14 2 11.3 2 8C2 4.7 4.7 2 8 2C11.3 2 14 4.7 14 8C14 11.3 11.3 14 8 14Z"
+                        fill="#9333EA"
+                      />
+                      <path d="M6 5L11 8L6 11V5Z" fill="#9333EA" />
+                    </svg>
+                  </div>
+                  <h2 className="text-base sm:text-lg font-bold">Recent Videos</h2>
+                </div>
+                <button>
+                  <MoreHorizontal className="h-5 w-5 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {recentVideos.map((video) => (
+                  <div key={video.id} className="group">
+                    <div className="relative aspect-square rounded-lg overflow-hidden mb-2">
+                      <Image
+                        src={video.thumbnail || "/placeholder.svg"}
+                        alt={video.title}
+                        fill
+                        className="object-cover"
+                      />
+                      {/* Green recording indicator */}
+                      <div className="absolute top-2 right-2 bg-green-400 rounded-full w-5 sm:w-6 h-5 sm:h-6 flex items-center justify-center">
+                        <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white rounded-full"></div>
+                      </div>
+                    </div>
+                    <h3 className="font-medium text-xs sm:text-sm truncate">{video.title}</h3>
+                    <div className="flex justify-between items-center mt-1">
+                      <span className="text-xs text-gray-500">{video.duration}</span>
+                      <button className="bg-indigo-900 text-white text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-md">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Right Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm relative">
-            <div className="flex justify-between items-center mb-3 sm:mb-4">
-              <h2 className="text-base sm:text-lg font-bold">Your Storage</h2>
-              <div className="w-8 sm:w-10 h-8 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="sm:w-5 sm:h-5"
-                >
-                  <path
-                    d="M17.5 12.5V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V12.5"
-                    stroke="#3B82F6"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M5.83301 8.33301L9.99967 12.4997L14.1663 8.33301"
-                    stroke="#3B82F6"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M10 12.5V2.5"
-                    stroke="#3B82F6"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+          {/* Right Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm relative">
+              <div className="flex justify-between items-center mb-3 sm:mb-4">
+                <h2 className="text-base sm:text-lg font-bold">Your Storage</h2>
+                <div className="w-8 sm:w-10 h-8 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="sm:w-5 sm:h-5"
+                  >
+                    <path
+                      d="M17.5 12.5V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V12.5"
+                      stroke="#3B82F6"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M5.83301 8.33301L9.99967 12.4997L14.1663 8.33301"
+                      stroke="#3B82F6"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M10 12.5V2.5"
+                      stroke="#3B82F6"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
               </div>
-            </div>
 
-            <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
-              Supervise your drive space
-              <br />
-              in the easiest way
-            </p>
+              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
+                Supervise your drive space
+                <br />
+                in the easiest way
+              </p>
 
-            <div className="mb-4 sm:mb-6">
-              <div className="flex justify-between text-xs sm:text-sm mb-2">
-                <span>{storageData.used}</span>
-                <span>{storageData.total}</span>
+              <div className="mb-4 sm:mb-6">
+                <div className="flex justify-between text-xs sm:text-sm mb-2">
+                  <span>{storageData.used}</span>
+                  <span>{storageData.total}</span>
+                </div>
+                <div className="w-full h-1.5 sm:h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 rounded-full"
+                    style={{ width: `${storageData.percentage}%` }}
+                  ></div>
+                </div>
               </div>
-              <div className="w-full h-1.5 sm:h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 rounded-full" style={{ width: `${storageData.percentage}%` }}></div>
+
+              <button className="w-full bg-white border border-blue-500 text-blue-500 rounded-lg py-1.5 sm:py-2 text-sm font-medium hover:bg-blue-50 transition-colors">
+                Get More Storage
+              </button>
+
+              {/* Decorative illustration */}
+              <div className="mt-6 sm:mt-10 flex justify-center">
+                <Image
+                  src="/storage-illustration.png"
+                  alt="Storage illustration"
+                  width={150}
+                  height={112}
+                  className="w-[150px] sm:w-[200px]"
+                />
               </div>
-            </div>
-
-            <button className="w-full bg-white border border-blue-500 text-blue-500 rounded-lg py-1.5 sm:py-2 text-sm font-medium hover:bg-blue-50 transition-colors">
-              Get More Storage
-            </button>
-
-            {/* Decorative illustration */}
-            <div className="mt-6 sm:mt-10 flex justify-center">
-              <Image
-                src="/storage-illustration.png"
-                alt="Storage illustration"
-                width={150}
-                height={112}
-                className="w-[150px] sm:w-[200px]"
-              />
             </div>
           </div>
         </div>

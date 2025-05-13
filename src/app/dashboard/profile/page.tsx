@@ -1,8 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import { Bell, Search, ChevronDown, Edit2, MoreHorizontal } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { Edit2, MoreHorizontal } from "lucide-react"
+import NavbarDashboard from "@/components/NavbarDashboard"
 
 export default function ProfilePage() {
   const profileData = {
@@ -40,46 +40,10 @@ export default function ProfilePage() {
     <div className="flex min-h-screen bg-gray-50">
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="h-16 border-b bg-white flex items-center justify-between px-6">
-          <div className="flex items-center space-x-1 text-sm text-gray-500">
-            <span>Pages</span>
-            <span>/</span>
-            <span className="text-gray-900">Profile</span>
-          </div>
-          <div className="text-2xl font-bold">Profile</div>
-
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search"
-                className="pl-10 w-64 h-9 bg-gray-50 border-gray-200 focus-visible:ring-purple-500"
-              />
-            </div>
-
-            <button className="relative">
-              <Bell className="h-5 w-5 text-gray-600" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs flex items-center justify-center rounded-full">
-                3
-              </span>
-            </button>
-
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-full overflow-hidden">
-                <Image
-                  src="/professional-headshot.png"
-                  alt="Alex Jack Abimanyu"
-                  width={32}
-                  height={32}
-                  className="object-cover"
-                />
-              </div>
-              <span className="text-sm font-medium">Alex Jack Abimanyu</span>
-              <ChevronDown className="h-4 w-4 text-gray-500" />
-            </div>
-          </div>
-        </header>
+        {/* Header - Using NavbarDashboard directly */}
+        <div className="border-b bg-white px-6 py-3">
+          <NavbarDashboard title="Profile" showUploadButton={false} />
+        </div>
 
         {/* Content */}
         <main className="flex-1 bg-gray-50 p-6">

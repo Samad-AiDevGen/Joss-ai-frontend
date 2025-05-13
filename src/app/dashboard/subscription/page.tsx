@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
-import { ChevronDown, CreditCard, Lock, Search, Bell } from "lucide-react"
+import { ChevronDown, CreditCard, Lock } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import NavbarDashboard from "@/components/NavbarDashboard"
 
 export default function SubscriptionPage() {
   const [selectedPlan, setSelectedPlan] = useState("quarterly")
@@ -11,52 +11,9 @@ export default function SubscriptionPage() {
 
   return (
     <div className="flex-1 bg-gray-50">
-      {/* Header */}
-      <div className="bg-white p-4 sm:p-6 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              {/* Breadcrumb */}
-              <div className="flex items-center space-x-1 text-xs sm:text-sm text-gray-500 mb-2">
-                <span>Pages</span>
-                <span>/</span>
-                <span className="text-gray-900">Payment</span>
-              </div>
-              <h1 className="text-xl sm:text-2xl font-bold">Payment</h1>
-            </div>
-
-            <div className="flex items-center gap-4 w-full sm:w-auto">
-              <div className="relative flex-1 sm:flex-initial">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search"
-                  className="pl-10 w-full sm:w-64 h-9 bg-gray-50 border-gray-200 focus-visible:ring-purple-500"
-                />
-              </div>
-
-              <button className="relative">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs flex items-center justify-center rounded-full">
-                  3
-                </span>
-              </button>
-
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 rounded-full overflow-hidden">
-                  <Image
-                    src="/professional-headshot.png"
-                    alt="Alex Jack Abimanyu"
-                    width={32}
-                    height={32}
-                    className="object-cover"
-                  />
-                </div>
-                <span className="text-sm font-medium hidden sm:inline">Alex Jack Abimanyu</span>
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Header - Using NavbarDashboard */}
+      <div className="border-b bg-white px-6 py-3">
+        <NavbarDashboard title="Payment" showUploadButton={false} />
       </div>
 
       {/* Content */}

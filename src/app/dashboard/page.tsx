@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Heart, Play, Search, Bell, Upload, ChevronDown, ExternalLink, Database, Crown } from "lucide-react"
+import { Heart, Play, ExternalLink, Database, Crown } from "lucide-react"
+import NavbarDashboard from "@/components/NavbarDashboard"
 import UploadDialog from "@/components/upload-dialog" // Upload Photo Dialog
 import VideoGenerator from "@/components/video-generator" // Video Generator Dialog
 import VideoCall from "@/components/video-call" // Video Call Component
@@ -164,10 +165,6 @@ export default function Dashboard() {
     }
   }
 
-  const navigateToProfile = () => {
-    router.push("/dashboard/profile")
-  }
-
   const navigateToStorage = () => {
     router.push("/dashboard/storage")
   }
@@ -205,55 +202,13 @@ export default function Dashboard() {
       {/* Main Content Area */}
       <div className="flex flex-col md:flex-row p-4 md:p-6">
         <div className="flex-1 md:pr-6">
-          {/* Header - Added pl-12 for mobile to make space for the sidebar toggle */}
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 md:mb-8 gap-4">
-            <div className="flex flex-col md:flex-row md:items-center gap-4 pl-12 md:pl-0">
-              <div>
-                <h1 className="text-xl md:text-2xl font-bold">Joss AI</h1>
-                <p className="text-sm text-gray-500">(Image to video generator)</p>
-              </div>
-              {/* Upload Photo Button */}
-              <button
-                className="self-start md:ml-6 border border-purple-600 text-purple-600 px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-1.5"
-                onClick={() => setIsUploadDialogOpen(true)}
-              >
-                <Upload size={14} />
-                Upload Photo
-              </button>
-            </div>
-
-            {/* Desktop Header Actions - Hidden on mobile */}
-            <div className="hidden md:flex items-center gap-4">
-              <button className="bg-purple-100 text-purple-600 px-4 py-1.5 rounded-full text-sm font-medium">
-                Download App
-              </button>
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                <Search className="h-4 w-4 text-gray-600" />
-              </div>
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                <Bell className="h-4 w-4 text-gray-600" />
-              </div>
-              <div className="flex items-center gap-2 cursor-pointer" onClick={navigateToProfile}>
-                <div className="w-8 h-8 rounded-full overflow-hidden">
-                  <Image src="/professional-headshot.png" alt="Rob John Gonzalez" width={32} height={32} />
-                </div>
-                <span className="text-sm font-medium">Rob John Gonzalez</span>
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-              </div>
-            </div>
-
-            {/* Mobile Header Actions */}
-            <div className="flex md:hidden items-center justify-between">
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <Search className="h-4 w-4 text-gray-600" />
-                </div>
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <Bell className="h-4 w-4 text-gray-600" />
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Header - Using the new NavbarDashboard component */}
+          <NavbarDashboard
+            title="Joss AI"
+            subtitle="Image to video generator"
+            showUploadButton={true}
+            onUploadClick={() => setIsUploadDialogOpen(true)}
+          />
 
           {/* Hero Banner */}
           <div className="relative bg-indigo-900 rounded-xl p-4 md:p-6 mb-6 md:mb-8 overflow-hidden">
