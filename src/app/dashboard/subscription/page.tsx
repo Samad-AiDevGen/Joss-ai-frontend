@@ -13,7 +13,11 @@ export default function SubscriptionPage() {
     <div className="flex-1 bg-gray-50">
       {/* Header - Using NavbarDashboard */}
       <div className="border-b bg-white px-6 py-3">
-        <NavbarDashboard title="Payment" showUploadButton={false} />
+        <NavbarDashboard
+          title="Payment"
+          showUploadButton={false}
+          user={{ name: "Jane Smith", email: "jane.smith@example.com" }}
+        />
       </div>
 
       {/* Content */}

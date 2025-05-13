@@ -136,7 +136,11 @@ export default function StoragePage() {
     <div className="flex-1 bg-gray-50">
       {/* Header - Using NavbarDashboard */}
       <div className="border-b bg-white px-6 py-3">
-        <NavbarDashboard title="Storage" showUploadButton={false} />
+        <NavbarDashboard 
+          title="Storage" 
+          showUploadButton={false} 
+          user={{ name: "John Doe", email: "john.doe@example.com", avatarUrl: "/avatar.png" }} 
+        />
       </div>
 
       <div className="p-3 sm:p-6">

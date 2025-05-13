@@ -1,22 +1,21 @@
-// src/app/api/users/[id]/route.ts
-import { NextResponse } from 'next/server';
-import { ObjectId } from 'mongodb';
+// src/app/api/user/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import dbConnect from '@/lib/mongoose';
 import User from '@/models/User';
 
-// Fix the type definition for the handler
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+// Single user operations using query parameters
+export async function GET(request: NextRequest) {
   try {
     await dbConnect();
-    const id = params.id;
     
-    // Validate ObjectId format
-    if (!ObjectId.isValid(id)) {
+    // Get ID from query parameter
+    const url = new URL(request.url);
+    const id = url.searchParams.get('id');
+    
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
-        { success: false, error: 'Invalid ID format' },
+        { success: false, error: 'Invalid or missing ID' },
         { status: 400 }
       );
     }
@@ -40,27 +39,23 @@ export async function GET(
   }
 }
 
-// Also update PUT and DELETE handlers with the same parameter pattern
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest) {
   try {
     await dbConnect();
-    const id = params.id;
     
-    if (!ObjectId.isValid(id)) {
+    // Get ID from query parameter
+    const url = new URL(request.url);
+    const id = url.searchParams.get('id');
+    
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
-        { success: false, error: 'Invalid ID format' },
+        { success: false, error: 'Invalid or missing ID' },
         { status: 400 }
       );
     }
     
     const body = await request.json();
-    
-    // Remove fields that shouldn't be updated directly
-    delete body.password;
-    const updateData = body;
+    const {...updateData } = body;
     
     const updatedUser = await User.findByIdAndUpdate(
       id,
@@ -78,7 +73,7 @@ export async function PUT(
     return NextResponse.json({
       success: true,
       message: 'User updated successfully',
-      user: updatedUser,
+      user: updatedUser
     }, { status: 200 });
   } catch (error) {
     console.error('Error updating user:', error);
@@ -89,24 +84,24 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest) {
   try {
     await dbConnect();
-    const id = params.id;
     
-    if (!ObjectId.isValid(id)) {
+    // Get ID from query parameter
+    const url = new URL(request.url);
+    const id = url.searchParams.get('id');
+    
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
-        { success: false, error: 'Invalid ID format' },
+        { success: false, error: 'Invalid or missing ID' },
         { status: 400 }
       );
     }
     
-    const deletedUser = await User.findByIdAndDelete(id);
+    const user = await User.findByIdAndDelete(id);
     
-    if (!deletedUser) {
+    if (!user) {
       return NextResponse.json(
         { success: false, error: 'User not found' },
         { status: 404 }
@@ -115,7 +110,7 @@ export async function DELETE(
     
     return NextResponse.json({
       success: true,
-      message: 'User deleted successfully',
+      message: 'User deleted successfully'
     }, { status: 200 });
   } catch (error) {
     console.error('Error deleting user:', error);

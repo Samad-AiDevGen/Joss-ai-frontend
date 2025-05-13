@@ -42,7 +42,15 @@ export default function ProfilePage() {
       <div className="flex-1 flex flex-col">
         {/* Header - Using NavbarDashboard directly */}
         <div className="border-b bg-white px-6 py-3">
-          <NavbarDashboard title="Profile" showUploadButton={false} />
+          <NavbarDashboard 
+            title="Profile" 
+            showUploadButton={false} 
+            user={{ 
+              name: profileData.name, 
+              email: profileData.email, 
+              avatarUrl: "/professional-headshot.png" 
+            }} 
+          />
         </div>
 
         {/* Content */}
