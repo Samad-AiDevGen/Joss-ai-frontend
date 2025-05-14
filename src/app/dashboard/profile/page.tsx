@@ -1,9 +1,9 @@
 "use client"
 
 import Image from "next/image"
-import { Edit2, MoreHorizontal } from "lucide-react"
+import { Edit2, MoreHorizontal, Camera } from "lucide-react" // Added Camera icon
 import NavbarDashboard from "@/components/NavbarDashboard"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react" // Added useRef
 
 export default function ProfilePage() {
   const [profileData, setProfileData] = useState({
@@ -14,16 +14,20 @@ export default function ProfilePage() {
     birthday: "20 July 1985",
     organization: "Simple Web",
     language: "English",
+    profilePicture: "" // Added profilePicture field
   })
   
-  // Removed unused loading state
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
         // Get user data from localStorage
         const userString = localStorage.getItem("user")
-        if (!userString) {
+        const token = localStorage.getItem("Joss_Id")
+        
+        if (!userString || !token) {
           console.error("User data not found in localStorage")
           return
         }
@@ -40,19 +44,73 @@ export default function ProfilePage() {
             name: data.profile.name,
             username: data.profile.username,
             email: data.profile.email,
+            profilePicture: data.profile.profilePicture || "" // Get profilePicture if available
           })
         } else {
           console.error("Failed to fetch profile data:", data.error)
         }
       } catch (error) {
         console.error("Error fetching profile data:", error)
-      } finally {
-        // Removed setLoading(false) since loading state is unused
       }
     }
 
     fetchProfileData()
   }, [])
+
+  // Handle profile picture upload
+  const handleProfilePictureUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    
+    setUploading(true)
+    
+    try {
+      const token = localStorage.getItem("Joss_Id")
+      const userString = localStorage.getItem("user")
+      
+      if (!token || !userString) {
+        console.error("User data not found in localStorage")
+        return
+      }
+      
+      const user = JSON.parse(userString)
+      
+      // Create form data for upload
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('userId', user.id)
+      
+      // Upload to Cloudinary through our API
+      const response = await fetch('/api/upload/profile-picture', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        // Update profile data with new profile picture URL
+        setProfileData({
+          ...profileData,
+          profilePicture: data.imageUrl
+        })
+      } else {
+        console.error("Failed to upload profile picture:", data.error)
+      }
+    } catch (error) {
+      console.error("Error uploading profile picture:", error)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  // Trigger file input click
+  const triggerFileInput = () => {
+    fileInputRef.current?.click()
+  }
 
   const recentVideos = [
     {
@@ -87,7 +145,7 @@ export default function ProfilePage() {
             user={{ 
               name: profileData.name, 
               email: profileData.email, 
-              avatarUrl: "/professional-headshot.png" 
+              avatarUrl: profileData.profilePicture || "/professional-headshot.png" // Use uploaded picture if available
             }} 
           />
         </div>
@@ -102,7 +160,31 @@ export default function ProfilePage() {
               </div>
               <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                 <div className="relative h-24 w-24 rounded-full border-4 border-white overflow-hidden bg-white">
-                  <Image src="/professional-headshot.png" alt={profileData.name} fill className="object-cover" />
+                  <Image 
+                    src={profileData.profilePicture || "/professional-headshot.png"} 
+                    alt={profileData.name} 
+                    fill 
+                    className="object-cover" 
+                  />
+                  
+                  {/* Upload button overlay */}
+                  <div 
+                    className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                    onClick={triggerFileInput}
+                  >
+                    <Camera className="text-white" size={20} />
+                    {uploading && <span className="text-white text-xs mt-1">Uploading...</span>}
+                  </div>
+                  
+                  {/* Hidden file input */}
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    ref={fileInputRef} 
+                    className="hidden" 
+                    onChange={handleProfilePictureUpload} 
+                    disabled={uploading}
+                  />
                 </div>
               </div>
             </div>
@@ -117,6 +199,9 @@ export default function ProfilePage() {
               </div>
             </div>
 
+            {/* Rest of your profile page content remains the same */}
+            {/* ... */}
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Recent Video Section */}
               <div className="md:col-span-2 bg-white rounded-lg p-6 shadow-sm relative">
@@ -240,6 +325,8 @@ export default function ProfilePage() {
 
       {/* Right Sidebar */}
       <div className="hidden lg:block w-72 border-l bg-white p-6">
+        {/* Right sidebar content remains the same */}
+        {/* ... */}
         <div className="flex flex-col h-full">
           <div className="flex flex-col items-center mb-6">
             <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">

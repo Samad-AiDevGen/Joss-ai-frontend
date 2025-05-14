@@ -2,15 +2,15 @@
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Search, Bell, ChevronDown, Upload } from "lucide-react"
+import { useState, useEffect } from "react" // Add these imports
 
 interface NavbarDashboardProps {
   title: string
   subtitle?: string
   showUploadButton?: boolean
   onUploadClick?: () => void
-  onLogout?: () => void // Add logout handler
-  user: { name: string; email: string; avatarUrl?: string } | null // Add user property
-  
+  onLogout?: () => void
+  user?: { name: string; email: string; avatarUrl?: string } | null // Make user optional
 }
 
 export default function NavbarDashboard({
@@ -18,12 +18,50 @@ export default function NavbarDashboard({
   subtitle,
   showUploadButton = false,
   onUploadClick,
+  user: propUser // Rename to propUser to avoid conflicts
 }: NavbarDashboardProps) {
   const router = useRouter()
+  const [userData, setUserData] = useState<{ name: string; email: string; avatarUrl?: string } | null>(propUser || null)
+
+  // Fetch user data within the component
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Get user data from localStorage
+        const userString = localStorage.getItem("user")
+        if (!userString) return
+        
+        const user = JSON.parse(userString)
+        
+        // Fetch profile data from API
+        const response = await fetch(`/api/profile?id=${user.id}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setUserData({
+            name: data.profile.name,
+            email: data.profile.email,
+            avatarUrl: data.profile.profilePicture || ""
+          })
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error)
+      }
+    }
+    
+    // Only fetch if no user data was provided through props
+    if (!propUser || !propUser.name) {
+      fetchUserData()
+    }
+  }, [propUser])
 
   const navigateToProfile = () => {
     router.push("/dashboard/profile")
   }
+
+  // Use the component's userData state instead of the prop
+  const displayName = userData?.name || "User"
+  const avatarUrl = userData?.avatarUrl || "/professional-headshot.png"
 
   return (
     <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -57,9 +95,14 @@ export default function NavbarDashboard({
         </div>
         <div className="flex items-center gap-2 cursor-pointer" onClick={navigateToProfile}>
           <div className="w-8 h-8 rounded-full overflow-hidden">
-            <Image src="/professional-headshot.png" alt="Rob John Gonzalez" width={32} height={32} />
+            <Image 
+              src={avatarUrl} 
+              alt={displayName} 
+              width={32} 
+              height={32} 
+            />
           </div>
-          <span className="text-sm font-medium">Rob John Gonzalez</span>
+          <span className="text-sm font-medium">{displayName}</span>
           <ChevronDown className="h-4 w-4 text-gray-500" />
         </div>
       </div>

@@ -18,6 +18,13 @@ interface VideoCardProps {
   thumbnail: string
 }
 
+interface UserPhoto {
+  id: string
+  imageUrl: string
+  title: string
+  createdAt: string
+}
+
 const VideoCard = ({
   id,
   title,
@@ -86,62 +93,24 @@ export default function Dashboard() {
   const [activeVideoCall, setActiveVideoCall] = useState<VideoCardProps | null>(null)
   const [activeExportVideo, setActiveExportVideo] = useState<VideoCardProps | null>(null)
   const [activeEditVideo, setActiveEditVideo] = useState<VideoCardProps | null>(null)
+
+  // User state
   interface User {
     id: string
     name: string
     email: string
-    // Add other fields as needed
+    avatarUrl?: string // Add this property
   }
 
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Authentication check and dashboard setup
-  useEffect(() => {
-    // Check for JWT token
-    const token = localStorage.getItem('Joss_Id')
-    if (!token) {
-      // If no token, redirect to login
-      router.push('/login')
-      return
-    }
+  // Photos/Videos state
+  const [userPhotos, setUserPhotos] = useState<VideoCardProps[]>([])
+  const [isLoadingPhotos, setIsLoadingPhotos] = useState(false)
 
-    // Get user info if available
-    try {
-      const userInfo = localStorage.getItem('user')
-      if (userInfo) {
-        setUser(JSON.parse(userInfo))
-        const parsedUserInfo = JSON.parse(userInfo);
-        console.log("This is a protected route, user logged in with", parsedUserInfo.id || "unknown ID")
-      }
-    } catch (error) {
-      console.error("Error parsing user data:", error)
-    }
-
-    setIsLoading(false)
-
-    // Add a class to the body element when the dashboard mounts
-    document.body.classList.add("dashboard-page")
-
-    // Clean up function to remove the class when component unmounts
-    return () => {
-      document.body.classList.remove("dashboard-page")
-    }
-  }, [router])
-
-  // If still checking authentication, show loading
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="p-4 text-center">
-          <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
-  const recentVideos = [
+  // Sample fallback videos
+  const sampleVideos = [
     {
       id: "1",
       title: "Example Video 1",
@@ -180,9 +149,139 @@ export default function Dashboard() {
     },
   ]
 
-  const handleUploadComplete = (fileUrl: string) => {
-    console.log("File uploaded:", fileUrl)
-    // Do not navigate away from the dashboard
+  // Fetch user photos
+  const fetchUserPhotos = async () => {
+    try {
+      setIsLoadingPhotos(true)
+      const token = localStorage.getItem("Joss_Id")
+      if (!token) return
+
+      const response = await fetch("/api/photos", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      const data = await response.json()
+
+      if (data.success && data.photos && data.photos.length > 0) {
+        // Convert API response to VideoCardProps format
+        const photos = data.photos.map((photo: UserPhoto) => ({
+          id: photo.id,
+          title: photo.title || "My Photo",
+          duration: "Photo", // Indicator that it's a photo
+          thumbnail: photo.imageUrl,
+        }))
+
+        setUserPhotos(photos)
+      } else {
+        // If no photos found, use sample data
+        setUserPhotos([])
+      }
+    } catch (error) {
+      console.error("Error fetching photos:", error)
+    } finally {
+      setIsLoadingPhotos(false)
+    }
+  }
+
+  // Add this function right after the fetchUserPhotos function
+  const fetchProfileData = async () => {
+    try {
+      // Get user data from localStorage
+      const userString = localStorage.getItem("user")
+      const token = localStorage.getItem("Joss_Id")
+
+      if (!userString || !token) {
+        console.error("User data not found in localStorage")
+        return
+      }
+
+      const userData = JSON.parse(userString)
+
+      // Fetch profile data from API
+      const response = await fetch(`/api/profile?id=${userData.id}`)
+      const data = await response.json()
+
+      if (data.success) {
+        // Update user state with profile picture
+        setUser({
+          id: userData.id,
+          name: data.profile.name || userData.username || userData.name,
+          email: data.profile.email || userData.email,
+          avatarUrl: data.profile.profilePicture || "/professional-headshot.png",
+        })
+      } else {
+        console.error("Failed to fetch profile data:", data.error)
+      }
+    } catch (error) {
+      console.error("Error fetching profile data:", error)
+    }
+  }
+
+  // Modify the useEffect to call fetchProfileData
+  useEffect(() => {
+    // Check for JWT token
+    const token = localStorage.getItem("Joss_Id")
+    if (!token) {
+      // If no token, redirect to login
+      router.push("/login")
+      return
+    }
+
+    // Get user info if available
+    try {
+      const userInfo = localStorage.getItem("user")
+      if (userInfo) {
+        const parsedUserInfo = JSON.parse(userInfo)
+        setUser({
+          id: parsedUserInfo.id,
+          name: parsedUserInfo.username || parsedUserInfo.name,
+          email: parsedUserInfo.email,
+          avatarUrl: "/professional-headshot.png", // Default avatar
+        })
+        console.log("This is a protected route, user logged in with", parsedUserInfo.id || "unknown ID")
+      }
+    } catch (error) {
+      console.error("Error parsing user data:", error)
+    }
+
+    // Fetch profile data to get the profile picture
+    fetchProfileData()
+
+    // Fetch user photos
+    fetchUserPhotos()
+
+    setIsLoading(false)
+
+    // Add a class to the body element when the dashboard mounts
+    document.body.classList.add("dashboard-page")
+
+    // Clean up function to remove the class when component unmounts
+    return () => {
+      document.body.classList.remove("dashboard-page")
+    }
+  }, [router])
+
+  // If still checking authentication, show loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="p-4 text-center">
+          <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Combine user photos with sample videos if needed
+  const videosToDisplay = userPhotos.length > 0 ? userPhotos : sampleVideos
+
+  const handleUploadComplete = (imageUrl: string) => {
+    console.log("File uploaded:", imageUrl)
+    // Fetch the updated list of user photos
+    fetchUserPhotos()
   }
 
   const handlePlayVideo = (video: VideoCardProps) => {
@@ -199,7 +298,7 @@ export default function Dashboard() {
 
   const handleVideoCallEnd = (videoId: string) => {
     // When a video call ends, we can offer to export it
-    const video = recentVideos.find((v) => v.id === videoId)
+    const video = videosToDisplay.find((v) => v.id === videoId)
     if (video) {
       setActiveVideoCall(null)
       setActiveExportVideo(video)
@@ -214,10 +313,10 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     // Clear JWT token and user info
-    localStorage.removeItem('Joss_Id')
-    localStorage.removeItem('user')
+    localStorage.removeItem("Joss_Id")
+    localStorage.removeItem("user")
     // Redirect to login page
-    router.push('/login')
+    router.push("/login")
   }
 
   return (
@@ -259,8 +358,12 @@ export default function Dashboard() {
             subtitle="Image to video generator"
             showUploadButton={true}
             onUploadClick={() => setIsUploadDialogOpen(true)}
-            onLogout={handleLogout} // Add logout handler
-            user={user} // Pass user info to navbar if your component supports it
+            onLogout={handleLogout}
+            user={{
+              name: user?.name || "",
+              email: user?.email || "",
+              avatarUrl: user?.avatarUrl || "/professional-headshot.png",
+            }}
           />
 
           {/* Hero Banner */}
@@ -290,16 +393,26 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Recent Videos */}
+          {/* Recent Videos/Photos */}
           <div>
-            <div className="flex items-center mb-4">
-              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mr-2">
-                <Play className="h-3 w-3 text-purple-600 fill-purple-600" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mr-2">
+                  <Play className="h-3 w-3 text-purple-600 fill-purple-600" />
+                </div>
+                <h2 className="text-lg font-bold">{userPhotos.length > 0 ? "Your Photos" : "Sample Videos"}</h2>
               </div>
-              <h2 className="text-lg font-bold">Recent Videos</h2>
+              {isLoadingPhotos && (
+                <div className="flex items-center text-gray-500 text-sm">
+                  <div className="w-4 h-4 border-2 border-gray-300 border-t-purple-600 rounded-full animate-spin mr-2"></div>
+                  Loading...
+                </div>
+              )}
             </div>
+
+            {/* Display user photos or sample videos */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {recentVideos.map((video) => (
+              {videosToDisplay.map((video) => (
                 <VideoCard
                   key={video.id}
                   id={video.id}
@@ -312,6 +425,19 @@ export default function Dashboard() {
                 />
               ))}
             </div>
+
+            {/* Show message if no photos */}
+            {userPhotos.length === 0 && (
+              <div className="text-center mt-4 p-6 bg-gray-50 rounded-lg border border-gray-100">
+                <p className="text-gray-500">You haven&apos;t uploaded any photos yet.</p>
+                <button
+                  className="mt-2 text-purple-600 hover:text-purple-700 font-medium"
+                  onClick={() => setIsUploadDialogOpen(true)}
+                >
+                  Click here to upload your first photo
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

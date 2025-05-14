@@ -42,6 +42,13 @@ const userSchema = new Schema({
   // Google OAuth fields (add these)
   googleId: String,
   avatar: String,
+
+  // Update in your User.ts model
+// Add this field to your schema
+  profilePicture: {
+  type: String,
+  default: "",
+},
 });
 
 // Middleware: Hash password before saving

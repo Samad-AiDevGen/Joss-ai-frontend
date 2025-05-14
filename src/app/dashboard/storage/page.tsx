@@ -139,7 +139,7 @@ export default function StoragePage() {
         <NavbarDashboard 
           title="Storage" 
           showUploadButton={false} 
-          user={{ name: "John Doe", email: "john.doe@example.com", avatarUrl: "/avatar.png" }} 
+          // user={{ name: "John Doe", email: "john.doe@example.com", avatarUrl: "/avatar.png" }} 
         />
       </div>
 

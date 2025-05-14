@@ -1,22 +1,22 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef } from "react"
-import { X, Upload, Loader2 } from "lucide-react"
+import { X, Upload, Loader2, AlertCircle } from "lucide-react"
 
 type UploadStatus = "idle" | "selected" | "uploading" | "success" | "error"
 
 interface UploadDialogProps {
   isOpen: boolean
   onClose: () => void
-  onUploadComplete?: (fileUrl: string) => void
+  onUploadComplete?: (imageUrl: string) => void
 }
 
 export default function UploadDialog({ isOpen, onClose, onUploadComplete }: UploadDialogProps) {
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [dragActive, setDragActive] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   if (!isOpen) return null
@@ -43,6 +43,22 @@ export default function UploadDialog({ isOpen, onClose, onUploadComplete }: Uplo
   }
 
   const handleFileChange = (file: File) => {
+    // Check file type and size
+    const validTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    
+    if (!validTypes.includes(file.type)) {
+      setErrorMessage("Invalid file type. Only JPG, PNG, and SVG are supported.");
+      setUploadStatus("error");
+      return;
+    }
+    
+    if (file.size > maxSize) {
+      setErrorMessage("File is too large. Maximum size is 10MB.");
+      setUploadStatus("error");
+      return;
+    }
+    
     setSelectedFile(file)
     setUploadStatus("selected")
   }
@@ -61,23 +77,54 @@ export default function UploadDialog({ isOpen, onClose, onUploadComplete }: Uplo
     if (!selectedFile) return
 
     setUploadStatus("uploading")
-
-    // Simulate upload delay
-    setTimeout(() => {
-      // Mock successful upload
-      setUploadStatus("success")
-      if (onUploadComplete) {
-        onUploadComplete("https://example.com/uploaded-file.jpg")
+    
+    try {
+      // Get JWT token
+      const token = localStorage.getItem("Joss_Id");
+      if (!token) {
+        throw new Error("Authentication required");
       }
-
+      
+      // Create form data
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('title', selectedFile.name);
+      
+      // Send request to API
+      const response = await fetch('/api/photos', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to upload photo");
+      }
+      
+      // Success
+      setUploadStatus("success");
+      
+      if (onUploadComplete) {
+        onUploadComplete(data.photo.imageUrl);
+      }
+      
       // Close dialog after success
       setTimeout(() => {
-        onClose()
+        onClose();
         // Reset state for next upload
-        setSelectedFile(null)
-        setUploadStatus("idle")
-      }, 1000)
-    }, 2000)
+        setSelectedFile(null);
+        setUploadStatus("idle");
+      }, 1000);
+      
+    } catch (error) {
+      console.error("Upload error:", error);
+      setErrorMessage(error instanceof Error ? error.message : "Failed to upload photo");
+      setUploadStatus("error");
+    }
   }
 
   return (
@@ -131,7 +178,7 @@ export default function UploadDialog({ isOpen, onClose, onUploadComplete }: Uplo
                 </div>
               </div>
               <button onClick={handleUpload} className="bg-purple-600 text-white px-4 py-1.5 rounded text-sm">
-                Browse/Upload
+                Upload
               </button>
             </div>
           </div>
@@ -145,6 +192,32 @@ export default function UploadDialog({ isOpen, onClose, onUploadComplete }: Uplo
             </div>
             <p className="font-medium">Uploading...</p>
             <p className="text-xs text-gray-500 mt-1">Please wait</p>
+          </div>
+        )}
+        
+        {/* Success */}
+        {uploadStatus === "success" && (
+          <div className="border-2 border-green-200 rounded-lg p-8 flex flex-col items-center justify-center">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <p className="font-medium">Upload Successful!</p>
+          </div>
+        )}
+        
+        {/* Error */}
+        {uploadStatus === "error" && (
+          <div className="border-2 border-red-200 rounded-lg p-8 flex flex-col items-center justify-center">
+            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <AlertCircle className="h-6 w-6 text-red-600" />
+            </div>
+            <p className="font-medium">Upload Failed</p>
+            <p className="text-xs text-red-500 mt-1 text-center">{errorMessage}</p>
+            <button onClick={() => setUploadStatus("idle")} className="mt-4 text-sm text-purple-600">
+              Try Again
+            </button>
           </div>
         )}
 

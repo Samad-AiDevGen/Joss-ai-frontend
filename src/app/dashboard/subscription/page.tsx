@@ -16,7 +16,7 @@ export default function SubscriptionPage() {
         <NavbarDashboard
           title="Payment"
           showUploadButton={false}
-          user={{ name: "Jane Smith", email: "jane.smith@example.com" }}
+          // user={{ name: "Jane Smith", email: "jane.smith@example.com" }}
         />
       </div>
 
