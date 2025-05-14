@@ -3,17 +3,56 @@
 import Image from "next/image"
 import { Edit2, MoreHorizontal } from "lucide-react"
 import NavbarDashboard from "@/components/NavbarDashboard"
+import { useEffect, useState } from "react"
 
 export default function ProfilePage() {
-  const profileData = {
-    name: "Alex Jack Abimanyu",
-    username: "alexjack",
+  const [profileData, setProfileData] = useState({
+    name: "",
+    username: "",
     followers: 17,
-    email: "alexjackabimanyu@gmail.com",
+    email: "",
     birthday: "20 July 1985",
     organization: "Simple Web",
     language: "English",
-  }
+  })
+  
+  // Removed unused loading state
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        // Get user data from localStorage
+        const userString = localStorage.getItem("user")
+        if (!userString) {
+          console.error("User data not found in localStorage")
+          return
+        }
+
+        const user = JSON.parse(userString)
+        
+        // Fetch profile data from API
+        const response = await fetch(`/api/profile?id=${user.id}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setProfileData({
+            ...profileData,
+            name: data.profile.name,
+            username: data.profile.username,
+            email: data.profile.email,
+          })
+        } else {
+          console.error("Failed to fetch profile data:", data.error)
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error)
+      } finally {
+        // Removed setLoading(false) since loading state is unused
+      }
+    }
+
+    fetchProfileData()
+  }, [])
 
   const recentVideos = [
     {
@@ -63,7 +102,7 @@ export default function ProfilePage() {
               </div>
               <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
                 <div className="relative h-24 w-24 rounded-full border-4 border-white overflow-hidden bg-white">
-                  <Image src="/professional-headshot.png" alt="Alex Jack Abimanyu" fill className="object-cover" />
+                  <Image src="/professional-headshot.png" alt={profileData.name} fill className="object-cover" />
                 </div>
               </div>
             </div>
@@ -160,19 +199,19 @@ export default function ProfilePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm text-gray-500 mb-1">Username</label>
-                      <p className="font-medium">alexjack</p>
+                      <p className="font-medium">{profileData.username}</p>
                     </div>
 
                     <div>
                       <label className="block text-sm text-gray-500 mb-1">Name</label>
-                      <p className="font-medium">Alex Jack Abimanyu</p>
+                      <p className="font-medium">{profileData.name}</p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 gap-4">
                     <div>
                       <label className="block text-sm text-gray-500 mb-1">Email</label>
-                      <p className="font-medium truncate">alexjackabimanyu@gmail.com</p>
+                      <p className="font-medium truncate">{profileData.email}</p>
                     </div>
 
                     <div>

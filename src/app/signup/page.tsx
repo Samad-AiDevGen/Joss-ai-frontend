@@ -6,6 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react" // Add this import
 
 export default function Signup() {
   const router = useRouter()
@@ -18,6 +19,16 @@ export default function Signup() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+
+  // Add this function for Google sign in
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn("google", { callbackUrl: "/dashboard" })
+    } catch (err) {
+      console.error("Google sign in error:", err)
+      setError(err instanceof Error ? err.message : "An unexpected error occurred")
+    }
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
@@ -72,7 +83,11 @@ export default function Signup() {
 
           {/* Social Login Buttons */}
           <div className="flex gap-4 mb-6">
-            <button type="button" className="flex-1 flex items-center justify-center gap-2 bg-[#B25CD9] hover:bg-purple-700 text-white py-2.5 px-4 rounded-md transition-colors">
+            <button 
+              type="button" 
+              onClick={handleGoogleSignIn} // Add this onClick handler
+              className="flex-1 flex items-center justify-center gap-2 bg-[#B25CD9] hover:bg-purple-700 text-white py-2.5 px-4 rounded-md transition-colors"
+            >
               <span>G</span>
             </button>
             <button type="button" className="flex-1 flex items-center justify-center gap-2 bg-[#F4F7FE] hover:bg-gray-100 text-gray-700 py-2.5 px-4 rounded-md transition-colors">

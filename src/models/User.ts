@@ -19,7 +19,8 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: [true, 'Please provide a password'],
+    // Make password optional for Google users
+    required: false,
     minlength: 8,
   },
   createdAt: {
@@ -37,11 +38,16 @@ const userSchema = new Schema({
   },
   verificationToken: String,
   verificationTokenExpire: Date,
+  
+  // Google OAuth fields (add these)
+  googleId: String,
+  avatar: String,
 });
 
 // Middleware: Hash password before saving
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+  // Only hash the password if it exists and has been modified
+  if (!this.password || !this.isModified('password')) {
     return next();
   }
 
