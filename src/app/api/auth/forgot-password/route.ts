@@ -21,11 +21,11 @@ export async function POST(request: Request) {
     // Find user by email
     const user = await User.findOne({ email });
     
-    // Don't reveal if user exists for security reasons
+    // Return specific message if user doesn't exist
     if (!user) {
       return NextResponse.json(
-        { success: true, message: 'If your email is registered with us, you will receive a password reset link shortly.' },
-        { status: 200 }
+        { success: false, error: 'No account found with this email address.' },
+        { status: 404 }
       );
     }
     
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     }
     
     return NextResponse.json(
-      { success: true, message: 'If your email is registered with us, you will receive a password reset link shortly.' },
+      { success: true, message: 'Password reset link sent successfully! Please check your inbox.' },
       { status: 200 }
     );
   } catch (error) {
