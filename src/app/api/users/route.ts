@@ -2,7 +2,10 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongoose';
 import User from '@/models/User';
-
+// import { generateVerificationToken } from '@/lib/token';
+// import { sendVerificationEmail } from '@/lib/email';
+import { generateVerificationToken } from '@/lib/token';
+import { sendVerificationEmail } from '@/lib/email';
 // GET all users
 export async function GET() {
   try {
@@ -22,6 +25,7 @@ export async function GET() {
 }
 
 // CREATE a new user
+// Inside your POST function, update the user creation section:
 export async function POST(request: Request) {
   try {
     await dbConnect();
@@ -49,12 +53,21 @@ export async function POST(request: Request) {
       );
     }
     
-    // Create user - password hashing is handled in the model
+    // Generate verification token
+    const { token, expires } = generateVerificationToken();
+    
+    // Create user with verification token
     const newUser = await User.create({
       username,
       email,
       password,
+      isVerified: false,
+      verificationToken: token,
+      verificationTokenExpire: expires
     });
+    
+    // Send verification email
+    await sendVerificationEmail(email, token);
     
     // Return user without password
     const user = newUser.toObject();
@@ -62,7 +75,7 @@ export async function POST(request: Request) {
     
     return NextResponse.json({
       success: true,
-      message: 'User created successfully',
+      message: 'User created successfully. Please check your email to verify your account.',
       user
     }, { status: 201 });
   } catch (error) {

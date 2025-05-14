@@ -52,7 +52,7 @@ export default function Signup() {
       }
 
       // If signup successful, redirect to login page
-      alert("Account created successfully! Please log in.")
+      alert("Account created successfully! Please check your email to verify your account.")
       router.push("/login")
     } catch (err) {
       console.error("Signup error:", err)

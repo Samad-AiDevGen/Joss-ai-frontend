@@ -1,7 +1,7 @@
 // src/app/login/page.tsx
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -15,6 +15,16 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get('verified') === 'true') {
+        setSuccess("Email verified successfully! You can now log in.");
+      }
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -23,6 +33,7 @@ export default function Login() {
     })
     // Clear error when user changes input
     if (error) setError("")
+    if (success) setSuccess("")
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -97,6 +108,13 @@ export default function Login() {
           {error && (
             <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded">
               {error}
+            </div>
+          )}
+
+          {/* Success message */}
+          {success && (
+            <div className="mb-4 p-3 bg-green-100 border border-green-300 text-green-700 rounded">
+              {success}
             </div>
           )}
 
